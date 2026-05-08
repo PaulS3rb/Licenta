@@ -100,7 +100,8 @@ order = ["Less than 2h", "2 to 5h", "5 to 10h", "More than 10h"]
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.boxplot(data=df_raw, x="studytime_label", y="G3",
-            order=order, palette="Blues", ax=ax)
+            order=order, hue="studytime_label", hue_order=order,
+            palette="Blues", legend=False, ax=ax)
 ax.axhline(y=10, color="#C44E52", linestyle="--", linewidth=1.2,
            label="Pass threshold (10)")
 ax.set_title(f"{LABELS['studytime']} vs {LABELS['G3']}", fontsize=14, fontweight="bold")
@@ -172,13 +173,15 @@ medu_order = ["None", "Primary school", "Middle school", "Secondary school", "Hi
 
 fig, ax = plt.subplots(figsize=(8, 5))
 sns.boxplot(data=df_raw, x="Medu_label", y="G3",
-            order=medu_order, palette="Greens", ax=ax)
+            order=medu_order, hue="Medu_label", hue_order=medu_order,
+            palette="Greens", legend=False, ax=ax)
 ax.axhline(y=10, color="#C44E52", linestyle="--", linewidth=1.2,
            label="Pass threshold (10)")
 ax.set_title(f"{LABELS['Medu']} vs {LABELS['G3']}", fontsize=14, fontweight="bold")
 ax.set_xlabel(LABELS["Medu"], fontsize=12)
 ax.set_ylabel(LABELS["G3"], fontsize=12)
-ax.set_xticklabels(ax.get_xticklabels(), rotation=15, ha="right")
+ax.tick_params(axis="x", labelrotation=15)
+plt.setp(ax.get_xticklabels(), ha="right")
 ax.legend()
 plt.tight_layout()
 plt.savefig("plot6_medu_grade.png")
