@@ -1,0 +1,4 @@
+Model,Task,R²,MAE,RMSE,Accuracy,Precision (Pass),Recall (Pass),F1 (Pass),CV Score (mean),CV Score (std),AUC-ROC
+Linear Regression,Regression (predict G3),0.1415,3.3953,4.1957,—,—,—,—,0.0015,0.0958,—
+Logistic Regression,Classification (pass/fail),—,—,—,0.7089,0.7377,0.8654,0.7965,0.7658,0.0466,0.7379
+Random Forest,Classification (pass/fail),—,—,—,0.6582,0.6812,0.9038,0.7769,0.8072,0.027,0.7261

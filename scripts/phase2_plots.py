@@ -1,9 +1,8 @@
-# =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
-# Phase 2: Exploratory Data Analysis (EDA)
+#PHASE 2
+
+
 # =============================================================================
 # Run this AFTER phase1_data_setup.py.
-# Make sure student-mat.csv and student_preprocessed.csv are in the same folder.
 # This script produces 6 plots saved as PNG files.
 # =============================================================================
 
@@ -13,9 +12,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("student_preprocessed.csv")
+df = pd.read_csv("../data/student_preprocessed.csv")
 
-df_raw = pd.read_csv("student-mat.csv", sep=";")
+df_raw = pd.read_csv("../data/student-mat.csv", sep=";")
 df_raw["pass_fail"] = (df_raw["G3"] >= 10).astype(int)
 
 sns.set_theme(style="whitegrid", palette="muted")
@@ -63,13 +62,13 @@ ax.set_xlabel(LABELS["G3"], fontsize=12)
 ax.set_ylabel("Number of Students", fontsize=12)
 ax.legend()
 plt.tight_layout()
-plt.savefig("plot1_grade_distribution.png")
+plt.savefig("../plots/plot1_grade_distribution.png")
 plt.show()
 print("Plot 1 saved: plot1_grade_distribution.png")
 
 # ── PLOT 2: Pass vs Fail Count ────────────────────────────────────────────────
 # Simple bar chart showing class balance.
-# Class imbalance affects model evaluation — discuss in thesis.
+
 
 fig, ax = plt.subplots(figsize=(5, 5))
 
@@ -86,7 +85,7 @@ ax.set_xlabel("Outcome", fontsize=12)
 ax.set_ylabel("Number of Students", fontsize=12)
 ax.set_ylim(0, max(counts.values) * 1.15)
 plt.tight_layout()
-plt.savefig("plot2_pass_fail.png")
+plt.savefig("../plots/plot2_pass_fail.png")
 plt.show()
 print("Plot 2 saved: plot2_pass_fail.png")
 
@@ -109,7 +108,7 @@ ax.set_xlabel(LABELS["studytime"], fontsize=12)
 ax.set_ylabel(LABELS["G3"], fontsize=12)
 ax.legend()
 plt.tight_layout()
-plt.savefig("plot3_studytime_grade.png")
+plt.savefig("../plots/plot3_studytime_grade.png")
 plt.show()
 print("Plot 3 saved: plot3_studytime_grade.png")
 
@@ -126,7 +125,7 @@ ax.set_title(f"{LABELS['absences']} vs {LABELS['G3']}", fontsize=14, fontweight=
 ax.set_xlabel(LABELS["absences"], fontsize=12)
 ax.set_ylabel(LABELS["G3"], fontsize=12)
 plt.tight_layout()
-plt.savefig("plot4_absences_grade.png")
+plt.savefig("../plots/plot4_absences_grade.png")
 plt.show()
 print("Plot 4 saved: plot4_absences_grade.png")
 
@@ -153,13 +152,12 @@ ax.set_title("Correlation Heatmap — Numeric Variables", fontsize=14, fontweigh
 ax.set_xticklabels(ax.get_xticklabels(), rotation=35, ha="right", fontsize=8)
 ax.set_yticklabels(ax.get_yticklabels(), rotation=0, fontsize=8)
 plt.tight_layout()
-plt.savefig("plot5_correlation_heatmap.png")
+plt.savefig("../plots/plot5_correlation_heatmap.png")
 plt.show()
 print("Plot 5 saved: plot5_correlation_heatmap.png")
 
 # ── PLOT 6: Mother's Education vs Final Grade ──────────────────────────────────
 # Medu: 0=none, 1=primary, 2=5th–9th grade, 3=secondary, 4=higher education.
-# Parental education is a well-documented predictor of student outcomes.
 
 medu_labels = {
     0: "None",
@@ -184,7 +182,7 @@ ax.tick_params(axis="x", labelrotation=15)
 plt.setp(ax.get_xticklabels(), ha="right")
 ax.legend()
 plt.tight_layout()
-plt.savefig("plot6_medu_grade.png")
+plt.savefig("../plots/plot6_medu_grade.png")
 plt.show()
 print("Plot 6 saved: plot6_medu_grade.png")
 
@@ -202,5 +200,4 @@ print(f"  Highest corr. with G3:        Second Period Grade ({corr_matrix_raw['G
 print(f"  Number of Absences — G3 corr: {corr_matrix_raw['G3']['absences']:.2f}")
 print(f"  Weekly Study Time  — G3 corr: {corr_matrix_raw['G3']['studytime']:.2f}")
 print()
-print("All 6 plots saved as PNG files in your project folder.")
-print("Ready for Phase 3: Statistical Analysis")
+

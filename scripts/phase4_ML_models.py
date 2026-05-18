@@ -1,6 +1,5 @@
-# =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
-# Phase 4: Machine Learning Models
+#PHASE 4
+
 # =============================================================================
 # Run this AFTER phase1_data_setup.py.
 # Make sure student_preprocessed.csv is in the same folder.
@@ -34,7 +33,7 @@ from sklearn.metrics import (
 from sklearn.preprocessing import StandardScaler
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("student_preprocessed.csv")
+df = pd.read_csv("../data/student_preprocessed.csv")
 
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams["figure.dpi"] = 150
@@ -140,7 +139,7 @@ ax.text(0.05, 0.92, f"R² = {r2:.3f}", transform=ax.transAxes,
         fontsize=11, color="#333333",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="#cccccc"))
 plt.tight_layout()
-plt.savefig("plot7_linear_regression.png")
+plt.savefig("../plots/plot7_linear_regression.png")
 plt.show()
 print("Plot 7 saved: plot7_linear_regression.png")
 print()
@@ -240,7 +239,7 @@ for ax, y_pred, title in zip(
     ax.set_ylabel("Actual Label", fontsize=11)
 
 plt.tight_layout()
-plt.savefig("plot8_confusion_matrices.png")
+plt.savefig("../plots/plot8_confusion_matrices.png")
 plt.show()
 print("Plot 8 saved: plot8_confusion_matrices.png")
 print()
@@ -273,7 +272,7 @@ ax.axvline(x=top_importances.mean(), color="#C44E52", linestyle="--",
            linewidth=1.2, label=f"Mean importance ({top_importances.mean():.3f})")
 ax.legend(fontsize=10)
 plt.tight_layout()
-plt.savefig("plot9_feature_importances.png")
+plt.savefig("../plots/plot9_feature_importances.png")
 plt.show()
 print("Plot 9 saved: plot9_feature_importances.png")
 print()
@@ -321,7 +320,7 @@ ax.axhline(y=0.671, color="#C44E52", linestyle="--", linewidth=1,
            label="Baseline (always predict pass = 67.1%)")
 ax.legend(fontsize=10)
 plt.tight_layout()
-plt.savefig("plot10_model_comparison.png")
+plt.savefig("../plots/plot10_model_comparison.png")
 plt.show()
 print("Plot 10 saved: plot10_model_comparison.png")
 print()
@@ -350,7 +349,7 @@ metrics_data = {
     ],
 }
 
-pd.DataFrame(metrics_data).to_csv("results_model_metrics.csv", index=False)
+pd.DataFrame(metrics_data).to_csv("../results/results_model_metrics.csv", index=False)
 
 # =============================================================================
 # SUMMARY
@@ -381,5 +380,3 @@ print("  plot8_confusion_matrices.png")
 print("  plot9_feature_importances.png")
 print("  plot10_model_comparison.png")
 print("  results_model_metrics.csv")
-print()
-print("Ready for Phase 5: Evaluation & Thesis Conclusion")

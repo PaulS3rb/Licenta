@@ -1,9 +1,8 @@
+#PHASE 3
+
+
+
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
-# Phase 3: Statistical Analysis
-# =============================================================================
-# Run this AFTER phase1_data_setup.py and phase2_eda.py.
-# Make sure student-mat.csv and student_preprocessed.csv are in the same folder.
 # This script performs:
 #   1. Pearson correlation analysis (numeric variables vs G3)
 #   2. Hypothesis tests: t-tests and Mann-Whitney U tests
@@ -16,7 +15,7 @@ import numpy as np
 from scipy import stats
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("student-mat.csv", sep=";")
+df = pd.read_csv("../data/student-mat.csv", sep=";")
 df["pass_fail"] = (df["G3"] >= 10).astype(int)
 
 # ── FULL LABEL MAP ─────────────────────────────────────────────────────────────
@@ -204,7 +203,7 @@ for var, val1, val2, label1, label2 in binary_tests:
 # =============================================================================
 # PART 3 — NORMALITY CHECK (for thesis completeness)
 # =============================================================================
-# Before using parametric tests (t-test), you should check if G3 is normally
+# Before using parametric tests (t-test), checks if G3 is normally
 # distributed. The Shapiro-Wilk test does this.
 # H0: the data IS normally distributed.
 # If p < 0.05 → reject H0 → data is NOT normal → non-parametric tests preferred.
@@ -218,7 +217,6 @@ w_stat, p_norm = stats.shapiro(df["G3"])
 print(f"  Shapiro-Wilk: W = {w_stat:.4f},  p = {p_norm:.6f}")
 if p_norm < 0.05:
     print("  Result: G3 is NOT normally distributed (p < 0.05).")
-    print("  → This justifies using Mann-Whitney U (non-parametric) in your thesis.")
 else:
     print("  Result: G3 appears normally distributed (p >= 0.05).")
 print()
@@ -227,9 +225,9 @@ print()
 # PART 4 — SAVE RESULTS AS CSV
 # =============================================================================
 
-corr_df.to_csv("results_correlations.csv", index=False)
+corr_df.to_csv("../results/results_correlations.csv", index=False)
 hyp_df = pd.DataFrame(hypothesis_results)
-hyp_df.to_csv("results_hypothesis_tests.csv", index=False)
+hyp_df.to_csv("../results/results_hypothesis_tests.csv", index=False)
 
 print("=" * 65)
 print("PHASE 3 COMPLETE")
@@ -237,6 +235,3 @@ print("=" * 65)
 print("Files saved:")
 print("  results_correlations.csv       — Pearson correlation table")
 print("  results_hypothesis_tests.csv   — Hypothesis test table")
-print()
-print("Both tables can be pasted directly into your thesis Results section.")
-print("Ready for Phase 4: Machine Learning Models")
