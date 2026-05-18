@@ -1,11 +1,8 @@
-# =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
-# Phase 1: Data Setup & Preprocessing
+#PHASE 1
+
+
 # =============================================================================
 # Dataset: UCI Student Performance Dataset (Cortez & Silva, 2008)
-# Download from: https://archive.ics.uci.edu/dataset/320/student+performance
-# After downloading, unzip and place student-mat.csv and student-por.csv
-# in the same folder as this script.
 # =============================================================================
 
 import pandas as pd
@@ -16,9 +13,9 @@ import numpy as np
 #   student-mat.csv  → Math course
 #   student-por.csv  → Portuguese language course
 # We will work with the Math dataset for this thesis.
-# The separator in these CSV files is a semicolon (;), not a comma.
 
-df = pd.read_csv("student-mat.csv", sep=";")
+
+df = pd.read_csv("../data/student-mat.csv", sep=";")
 
 print("=" * 60)
 print("STEP 1: Dataset loaded successfully")
@@ -58,7 +55,7 @@ print()
 # ── 4. UNDERSTAND THE TARGET VARIABLE ────────────────────────────────────────
 # G3 = final grade (0–20 scale) — this is what we want to predict.
 # G1 = first period grade, G2 = second period grade (also 0–20).
-# Note: G1, G2, and G3 are highly correlated — we will discuss this in EDA.
+#
 
 print("=" * 60)
 print("STEP 3: Target variable — G3 (final grade)")
@@ -84,11 +81,9 @@ print(f"Pass rate: {pass_count.get(1, 0) / len(df) * 100:.1f}%")
 print()
 
 # ── 6. ENCODE CATEGORICAL VARIABLES ──────────────────────────────────────────
-# Machine learning models need numbers, not text.
-# We use pandas get_dummies() for one-hot encoding of categorical columns.
-# drop_first=True avoids the "dummy variable trap" (multicollinearity).
 
-# First, let's identify which columns are categorical (object type).
+
+
 categorical_cols = df.select_dtypes(include="object").columns.tolist()
 print("=" * 60)
 print("STEP 5: Encoding categorical variables")
@@ -107,10 +102,10 @@ print()
 #   X_regression  → for linear regression (predicting G3 as a number)
 #   X_classification → for logistic regression & random forest (predicting pass/fail)
 #
-# IMPORTANT: We EXCLUDE G1 and G2 from the main feature sets.
+# We EXCLUDE G1 and G2 from the main feature sets.
 # Using G1/G2 to predict G3 would give artificially high accuracy,
 # because they are interim grades from the same school year.
-# Your thesis should mention this choice and its justification.
+
 
 # Columns to always exclude from features
 exclude_cols = ["G3", "pass_fail", "G1", "G2"]
@@ -132,7 +127,7 @@ print()
 # Save the encoded dataframe so we can reuse it in later phases
 # without repeating all the preprocessing steps.
 
-df_encoded.to_csv("student_preprocessed.csv", index=False)
+df_encoded.to_csv("../data/student_preprocessed.csv", index=False)
 
 print("=" * 60)
 print("STEP 7: Preprocessed data saved")
@@ -150,5 +145,3 @@ print(f"  Features available:  {X.shape[1]}")
 print(f"  Pass rate:           {df['pass_fail'].mean() * 100:.1f}%")
 print(f"  Mean final grade:    {df['G3'].mean():.2f} / 20")
 print(f"  Missing values:      {df.isnull().sum().sum()}")
-print()
-print("Ready for Phase 2: Exploratory Data Analysis (EDA)")

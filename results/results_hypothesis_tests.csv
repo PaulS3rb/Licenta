@@ -1,0 +1,10 @@
+Variable,Group 1,Group 2,Mean G3 (Group 1),Mean G3 (Group 2),t-statistic,t p-value,Mann-Whitney p,Cohen's d,Effect Size,Significant
+Sex,Female,Male,9.97,10.91,-2.062,0.0399,0.0407,-0.208,Small,Yes
+Home Address Type,Urban,Rural,10.67,9.51,2.108,0.0356,0.0178,0.255,Small,Yes
+Family Educational Support,Family support,No family support,10.27,10.64,-0.777,0.4377,0.3165,-0.08,Negligible,No
+Paid Extra Classes,Paid tutoring,No tutoring,10.92,9.99,2.033,0.0428,0.2267,0.205,Small,Yes
+Internet Access at Home,Internet at home,No internet at home,10.62,9.41,1.962,0.0505,0.0324,0.265,Small,No
+In a Romantic Relationship,In a relationship,Not in a relationship,9.58,10.84,-2.599,0.0097,0.0695,-0.277,Small,Yes
+Extra School Support,Extra school support,No school support,9.43,10.56,-1.647,0.1004,0.0028,-0.247,Small,No
+Extracurricular Activities,Extracurricular act.,No activities,10.49,10.34,0.319,0.7497,0.6049,0.032,Negligible,No
+Wants Higher Education,Wants higher education,Does not want higher education,10.61,6.8,3.679,0.0003,0.0006,0.844,Large,Yes
