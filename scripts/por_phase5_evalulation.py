@@ -1,17 +1,12 @@
 # =============================================================================
 # BACHELOR THESIS - Student Performance Prediction
-# Phase 5: Evaluation & Thesis Conclusion
+# Portuguese Dataset — Phase 5: Evaluation & Thesis Conclusion
 # =============================================================================
-# Run this AFTER all previous phases.
-# Make sure student_preprocessed.csv and student-mat.csv are in the same folder.
-#
-# This script:
-#   1. Re-trains all three models (self-contained — no need to re-run Phase 4)
-#   2. Produces a final comprehensive evaluation
-#   3. Generates a ROC curve comparison plot
-#   4. Generates a Precision-Recall curve plot
-#   5. Prints a structured thesis conclusion summary
-#   6. Saves results_final_report.csv
+# Run this AFTER all Portuguese phases (por_phase1 through por_phase4).
+# Reads from:  ../data/student_por_preprocessed.csv
+# Writes to:   ../plots/por_plot11_roc_curves.png
+#              ../plots/por_plot12_precision_recall.png
+#              ../results/por_results_final_report.csv
 # =============================================================================
 
 import pandas as pd
@@ -31,7 +26,7 @@ from sklearn.metrics import (
 from sklearn.preprocessing import StandardScaler
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("../data/student_preprocessed.csv")
+df = pd.read_csv("../data/student_por_preprocessed.csv")
 
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams["figure.dpi"] = 150
@@ -44,7 +39,7 @@ X     = df[feature_cols]
 y_reg = df["G3"]
 y_clf = df["pass_fail"]
 
-# ── TRAIN/TEST SPLIT (same seed as Phase 4 — identical split) ─────────────────
+# ── TRAIN/TEST SPLIT (same seed as Phase 4) ───────────────────────────────────
 X_train, X_test, y_reg_train, y_reg_test = train_test_split(
     X, y_reg, test_size=0.2, random_state=42
 )
@@ -81,13 +76,12 @@ y_pred_log = log_reg.predict(X_test_scaled)
 y_pred_rf  = rf.predict(X_test)
 y_pred_nn  = nn.predict(X_test_scaled)
 
-# Probability scores for ROC and PR curves
 y_prob_log = log_reg.predict_proba(X_test_scaled)[:, 1]
 y_prob_rf  = rf.predict_proba(X_test)[:, 1]
 y_prob_nn  = nn.predict_proba(X_test_scaled)[:, 1]
 
 print("=" * 65)
-print("PHASE 5: EVALUATION & THESIS CONCLUSION")
+print("PORTUGUESE — PHASE 5: EVALUATION & THESIS CONCLUSION")
 print("=" * 65)
 print()
 
@@ -96,30 +90,26 @@ print()
 # =============================================================================
 
 print("─" * 65)
-print("PART 1: Complete metrics — all three models")
+print("PART 1: Complete metrics — all models")
 print("─" * 65)
 
-# Linear Regression metrics
 r2   = r2_score(y_reg_test, y_pred_lr)
 mae  = mean_absolute_error(y_reg_test, y_pred_lr)
 rmse = np.sqrt(mean_squared_error(y_reg_test, y_pred_lr))
 
-# Classification metrics
 def clf_metrics(y_true, y_pred):
     return {
         "accuracy":  accuracy_score(y_true, y_pred),
-        "precision": precision_score(y_true, y_pred),
-        "recall":    recall_score(y_true, y_pred),
-        "f1":        f1_score(y_true, y_pred),
+        "precision": precision_score(y_true, y_pred, zero_division=0),
+        "recall":    recall_score(y_true, y_pred, zero_division=0),
+        "f1":        f1_score(y_true, y_pred, zero_division=0),
     }
 
 m_log = clf_metrics(y_clf_test, y_pred_log)
 m_rf  = clf_metrics(y_clf_test, y_pred_rf)
 m_nn  = clf_metrics(y_clf_test, y_pred_nn)
 
-# Cross-validation using StratifiedKFold — preserves class balance in each fold
-skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
-
+skf    = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 cv_r2  = cross_val_score(lr, X, y_reg, cv=5, scoring="r2")
 cv_log = cross_val_score(log_reg, X_train_scaled, y_clf_train, cv=skf, scoring="f1")
 cv_rf  = cross_val_score(rf, X, y_clf, cv=skf, scoring="f1")
@@ -141,8 +131,6 @@ print()
 # =============================================================================
 # PART 2 — FAIL CLASS DEEP DIVE
 # =============================================================================
-# The Fail class is the most educationally important group — and the hardest
-# to predict. We report separate metrics for it here.
 
 print("─" * 65)
 print("PART 2: Fail class performance (the at-risk students)")
@@ -176,16 +164,10 @@ print(f"  {'Fail F1':<35} {ff_log:>14.4f} {ff_rf:>14.4f} {ff_nn:>11.4f}")
 print(f"  {'Failing students correctly caught':<35} {tn_l:>14} {tn_r:>14} {tn_n:>11}")
 print(f"  {'Failing students missed':<35} {fn_l:>14} {fn_r:>14} {fn_n:>11}")
 print()
-print("  Note: 'missed' failing students are the most concerning outcome")
-print("  in an educational context — these are at-risk students overlooked.")
-print()
 
 # =============================================================================
 # PLOT 11 — ROC CURVES
 # =============================================================================
-# ROC curve plots True Positive Rate vs False Positive Rate at every threshold.
-# AUC (Area Under Curve): 1.0 = perfect, 0.5 = random guessing.
-# Higher AUC = better model regardless of the classification threshold.
 
 fpr_log, tpr_log, _ = roc_curve(y_clf_test, y_prob_log)
 fpr_rf,  tpr_rf,  _ = roc_curve(y_clf_test, y_prob_rf)
@@ -206,7 +188,7 @@ ax.plot([0, 1], [0, 1], color="#888888", linestyle="--",
 ax.fill_between(fpr_log, tpr_log, alpha=0.07, color="#4C72B0")
 ax.fill_between(fpr_rf,  tpr_rf,  alpha=0.07, color="#55A868")
 ax.fill_between(fpr_nn,  tpr_nn,  alpha=0.07, color="#C44E52")
-ax.set_title("ROC Curves — Logistic Regression vs Random Forest",
+ax.set_title("ROC Curves — All Classifiers (Portuguese)",
              fontsize=13, fontweight="bold")
 ax.set_xlabel("False Positive Rate", fontsize=12)
 ax.set_ylabel("True Positive Rate (Recall)", fontsize=12)
@@ -214,35 +196,32 @@ ax.legend(fontsize=10)
 ax.set_xlim(-0.01, 1.01)
 ax.set_ylim(-0.01, 1.01)
 plt.tight_layout()
-plt.savefig("../plots/mat_plot11_roc_curves.png")
+plt.savefig("../plots/por_plot11_roc_curves.png")
 plt.show()
-print("Plot 11 saved: ../plots/mat_plot11_roc_curves.png")
+print("Plot 11 saved: ../plots/por_plot11_roc_curves.png")
 
 # =============================================================================
 # PLOT 12 — PRECISION-RECALL CURVES
 # =============================================================================
-# More informative than ROC when classes are imbalanced (as here — 67% pass).
-# Shows the trade-off between precision and recall at different thresholds.
-# AP (Average Precision) summarises the curve as a single number.
 
-prec_log_curve, rec_log_curve, _ = precision_recall_curve(y_clf_test, y_prob_log)
-prec_rf_curve,  rec_rf_curve,  _ = precision_recall_curve(y_clf_test, y_prob_rf)
-prec_nn_curve,  rec_nn_curve,  _ = precision_recall_curve(y_clf_test, y_prob_nn)
+prec_log_c, rec_log_c, _ = precision_recall_curve(y_clf_test, y_prob_log)
+prec_rf_c,  rec_rf_c,  _ = precision_recall_curve(y_clf_test, y_prob_rf)
+prec_nn_c,  rec_nn_c,  _ = precision_recall_curve(y_clf_test, y_prob_nn)
 ap_log = average_precision_score(y_clf_test, y_prob_log)
 ap_rf  = average_precision_score(y_clf_test, y_prob_rf)
 ap_nn  = average_precision_score(y_clf_test, y_prob_nn)
 baseline_pr = y_clf_test.mean()
 
 fig, ax = plt.subplots(figsize=(7, 5))
-ax.plot(rec_log_curve, prec_log_curve, color="#4C72B0", linewidth=2,
+ax.plot(rec_log_c, prec_log_c, color="#4C72B0", linewidth=2,
         label=f"Logistic Regression (AP = {ap_log:.3f})")
-ax.plot(rec_rf_curve,  prec_rf_curve,  color="#55A868", linewidth=2,
+ax.plot(rec_rf_c,  prec_rf_c,  color="#55A868", linewidth=2,
         label=f"Random Forest       (AP = {ap_rf:.3f})")
-ax.plot(rec_nn_curve,  prec_nn_curve,  color="#C44E52", linewidth=2,
+ax.plot(rec_nn_c,  prec_nn_c,  color="#C44E52", linewidth=2,
         label=f"Neural Network      (AP = {ap_nn:.3f})")
 ax.axhline(y=baseline_pr, color="#888888", linestyle="--", linewidth=1.2,
            label=f"Baseline (AP = {baseline_pr:.3f})")
-ax.set_title("Precision-Recall Curves — All Classifiers",
+ax.set_title("Precision-Recall Curves — All Classifiers (Portuguese)",
              fontsize=12, fontweight="bold")
 ax.set_xlabel("Recall", fontsize=12)
 ax.set_ylabel("Precision", fontsize=12)
@@ -250,13 +229,13 @@ ax.legend(fontsize=10)
 ax.set_xlim(-0.01, 1.01)
 ax.set_ylim(-0.01, 1.11)
 plt.tight_layout()
-plt.savefig("../plots/mat_plot12_precision_recall.png")
+plt.savefig("../plots/por_plot12_precision_recall.png")
 plt.show()
-print("Plot 12 saved: ../plots/mat_plot12_precision_recall.png")
+print("Plot 12 saved: ../plots/por_plot12_precision_recall.png")
 print()
 
 # =============================================================================
-# PART 3 — FEATURE IMPORTANCE SUMMARY (top 5 for thesis)
+# PART 3 — FEATURE IMPORTANCE SUMMARY
 # =============================================================================
 
 LABELS = {
@@ -273,63 +252,41 @@ importances.index = [LABELS.get(c, c) for c in importances.index]
 top5 = importances.sort_values(ascending=False).head(5)
 
 print("─" * 65)
-print("PART 3: Top 5 most important features (Random Forest)")
+print("PART 3: Top 5 most important features (Random Forest — Portuguese)")
 print("─" * 65)
 for i, (feat, score) in enumerate(top5.items(), 1):
     print(f"  {i}. {feat:<35} {score:.4f}")
 print()
 
 # =============================================================================
-# PART 4 — STRUCTURED THESIS CONCLUSION
+# PART 4 — THESIS CONCLUSION SUMMARY
 # =============================================================================
 
 print("=" * 65)
-print("PART 4: Thesis Conclusion Summary")
+print("PART 4: Thesis Conclusion Summary — Portuguese Dataset")
 print("=" * 65)
 print()
-print("RESEARCH QUESTION:")
-print("  Can student academic performance be predicted using background")
-print("  factors (demographics, study habits, family situation)?")
+print("DATASET: Portuguese Language (n = 649)")
 print()
 print("KEY FINDINGS:")
 print()
-print("  1. Linear relationships are weak (R² = 0.14).")
-print("     Background variables alone cannot reliably predict the exact")
-print("     final grade. This is expected: without prior grades (G1, G2),")
-print("     the task is genuinely difficult.")
+print(f"  1. Linear Regression R² = {r2:.4f}")
+print(f"     MAE = {mae:.4f}  |  RMSE = {rmse:.4f}")
 print()
-print("  2. Classification (pass/fail) is more feasible than regression.")
-print(f"     Logistic Regression achieved F1 = {m_log['f1']:.2f} and accuracy")
-print(f"     = {m_log['accuracy']:.2f}, beating the naive baseline of 0.671.")
+best_f1  = max(m_log['f1'], m_rf['f1'], m_nn['f1'])
+best_clf = {m_log['f1']: "Logistic Regression",
+            m_rf['f1']:  "Random Forest",
+            m_nn['f1']:  "Neural Network"}[best_f1]
+print(f"  2. Best classifier (by F1): {best_clf}  (F1 = {best_f1:.4f})")
 print()
-print("  3. Logistic Regression outperformed Random Forest and Neural Network")
-print("     on this dataset. With only 395 students and weak non-linear signals,")
-print("     a simpler model generalised better. The Neural Network requires more")
-print("     data to realise its potential — a known limitation on small datasets.")
-print(f"     CV F1 scores: LR={cv_log.mean():.2f}, RF={cv_rf.mean():.2f}, NN={cv_nn.mean():.2f}")
+print(f"  3. Logistic Regression:  Accuracy={m_log['accuracy']:.4f}  F1={m_log['f1']:.4f}")
+print(f"     Random Forest:        Accuracy={m_rf['accuracy']:.4f}  F1={m_rf['f1']:.4f}")
+print(f"     Neural Network:       Accuracy={m_nn['accuracy']:.4f}  F1={m_nn['f1']:.4f}")
 print()
-print("  4. Failing students are the hardest to detect.")
-print(f"     Logistic Regression identified {tn_l}/{total_fail} failing students")
-print(f"     (recall = {fr_log:.2f}). This is the main limitation of the models")
-print("     and the most educationally significant finding.")
-print()
-print("  5. Past class failures is the strongest predictor of final grade,")
-print("     followed by parental education and alcohol consumption.")
-print("     Study time and absences showed surprisingly weak linear effects.")
-print()
-print("LIMITATIONS:")
-print("  - Small dataset (395 students, single school, Math subject only)")
-print("  - Class imbalance (67% pass) biases models toward predicting pass")
-print("  - No prior grade data used (intentional — avoids data leakage)")
-print("  - Neural Networks require larger datasets to reach full potential")
-print("  - Results may not generalise to other schools or subjects")
-print()
-print("FUTURE WORK:")
-print("  - Apply SMOTE or class weighting to improve Fail class detection")
-print("  - Include Portuguese language dataset for cross-subject comparison")
-print("  - Test deeper Neural Network architectures with more data")
-print("  - Test additional models: SVM, Gradient Boosting")
-print("  - Adjust classification threshold to prioritise Fail recall")
+print(f"  4. Fail class — students correctly identified:")
+print(f"     Logistic Regression: {tn_l}/{total_fail}  (recall = {fr_log:.2f})")
+print(f"     Random Forest:       {tn_r}/{total_fail}  (recall = {fr_rf:.2f})")
+print(f"     Neural Network:      {tn_n}/{total_fail}  (recall = {fr_nn:.2f})")
 print()
 
 # =============================================================================
@@ -337,72 +294,46 @@ print()
 # =============================================================================
 
 report = pd.DataFrame([
-    {
-        "Model":     "Linear Regression",
-        "Task":      "Regression (predict G3)",
-        "R²":        round(r2, 4),
-        "MAE":       round(mae, 4),
-        "RMSE":      round(rmse, 4),
-        "Accuracy":  "—",
-        "Precision": "—",
-        "Recall":    "—",
-        "F1":        "—",
-        "CV Mean":   round(cv_r2.mean(), 4),
-        "CV Std":    round(cv_r2.std(), 4),
-        "AUC-ROC":   "—",
-    },
-    {
-        "Model":     "Logistic Regression",
-        "Task":      "Classification (pass/fail)",
-        "R²":        "—",
-        "MAE":       "—",
-        "RMSE":      "—",
-        "Accuracy":  round(m_log["accuracy"], 4),
-        "Precision": round(m_log["precision"], 4),
-        "Recall":    round(m_log["recall"], 4),
-        "F1":        round(m_log["f1"], 4),
-        "CV Mean":   round(cv_log.mean(), 4),
-        "CV Std":    round(cv_log.std(), 4),
-        "AUC-ROC":   round(auc_log, 4),
-    },
-    {
-        "Model":     "Random Forest",
-        "Task":      "Classification (pass/fail)",
-        "R²":        "—",
-        "MAE":       "—",
-        "RMSE":      "—",
-        "Accuracy":  round(m_rf["accuracy"], 4),
-        "Precision": round(m_rf["precision"], 4),
-        "Recall":    round(m_rf["recall"], 4),
-        "F1":        round(m_rf["f1"], 4),
-        "CV Mean":   round(cv_rf.mean(), 4),
-        "CV Std":    round(cv_rf.std(), 4),
-        "AUC-ROC":   round(auc_rf, 4),
-    },
-    {
-        "Model":     "Neural Network",
-        "Task":      "Classification (pass/fail)",
-        "R²":        "—",
-        "MAE":       "—",
-        "RMSE":      "—",
-        "Accuracy":  round(m_nn["accuracy"], 4),
-        "Precision": round(m_nn["precision"], 4),
-        "Recall":    round(m_nn["recall"], 4),
-        "F1":        round(m_nn["f1"], 4),
-        "CV Mean":   round(cv_nn.mean(), 4),
-        "CV Std":    round(cv_nn.std(), 4),
-        "AUC-ROC":   round(auc_nn, 4),
-    },
+    {"Model": "Linear Regression",   "Task": "Regression",
+     "R²": round(r2,4), "MAE": round(mae,4), "RMSE": round(rmse,4),
+     "Accuracy":"—", "Precision":"—", "Recall":"—", "F1":"—",
+     "CV Mean": round(cv_r2.mean(),4), "CV Std": round(cv_r2.std(),4),
+     "AUC-ROC":"—"},
+    {"Model": "Logistic Regression", "Task": "Classification",
+     "R²":"—", "MAE":"—", "RMSE":"—",
+     "Accuracy": round(m_log['accuracy'],4),
+     "Precision": round(m_log['precision'],4),
+     "Recall":    round(m_log['recall'],4),
+     "F1":        round(m_log['f1'],4),
+     "CV Mean": round(cv_log.mean(),4), "CV Std": round(cv_log.std(),4),
+     "AUC-ROC": round(auc_log,4)},
+    {"Model": "Random Forest",       "Task": "Classification",
+     "R²":"—", "MAE":"—", "RMSE":"—",
+     "Accuracy": round(m_rf['accuracy'],4),
+     "Precision": round(m_rf['precision'],4),
+     "Recall":    round(m_rf['recall'],4),
+     "F1":        round(m_rf['f1'],4),
+     "CV Mean": round(cv_rf.mean(),4), "CV Std": round(cv_rf.std(),4),
+     "AUC-ROC": round(auc_rf,4)},
+    {"Model": "Neural Network",      "Task": "Classification",
+     "R²":"—", "MAE":"—", "RMSE":"—",
+     "Accuracy": round(m_nn['accuracy'],4),
+     "Precision": round(m_nn['precision'],4),
+     "Recall":    round(m_nn['recall'],4),
+     "F1":        round(m_nn['f1'],4),
+     "CV Mean": round(cv_nn.mean(),4), "CV Std": round(cv_nn.std(),4),
+     "AUC-ROC": round(auc_nn,4)},
 ])
 
-report.to_csv("../results/mat_results_final_report.csv", index=False)
+report.to_csv("../results/por_results_final_report.csv", index=False)
 
 print("=" * 65)
-print("PHASE 5 COMPLETE")
+print("PORTUGUESE PHASE 5 COMPLETE")
 print("=" * 65)
 print("Files saved:")
-print("  ../plots/mat_plot11_roc_curves.png")
-print("  ../plots/mat_plot12_precision_recall.png")
-print("  ../results/mat_results_final_report.csv")
+print("  ../plots/por_plot11_roc_curves.png")
+print("  ../plots/por_plot12_precision_recall.png")
+print("  ../results/por_results_final_report.csv")
 print()
-print("All 5 Math phases complete. Your thesis pipeline is finished.")
+print("All 5 Portuguese phases complete.")
+print("Next: run phase6_comparison.py to compare Math vs Portuguese results.")
