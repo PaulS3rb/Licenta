@@ -1,13 +1,11 @@
-#PHASE 3
-
-
-
 # =============================================================================
-# This script performs:
-#   1. Pearson correlation analysis (numeric variables vs G3)
-#   2. Hypothesis tests: t-tests and Mann-Whitney U tests
-#   3. Normality check (Shapiro-Wilk)
-#   4. Saves summary tables as CSV for your thesis
+# BACHELOR THESIS - Student Performance Prediction
+# Portuguese Dataset — Phase 3: Statistical Analysis
+# =============================================================================
+# Run this AFTER por_phase1_data_setup.py and por_phase2_eda.py.
+# Reads from:  ../data/student-por.csv
+# Writes to:   ../results/por_results_correlations.csv
+#              ../results/por_results_hypothesis_tests.csv
 # =============================================================================
 
 import pandas as pd
@@ -15,11 +13,10 @@ import numpy as np
 from scipy import stats
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("../data/student-mat.csv", sep=";")
+df = pd.read_csv("../data/student-por.csv", sep=";")
 df["pass_fail"] = (df["G3"] >= 10).astype(int)
 
 # ── FULL LABEL MAP ─────────────────────────────────────────────────────────────
-# Maps every raw column name to a readable label used in all output and CSVs.
 LABELS = {
     "age":        "Age",
     "Medu":       "Mother's Education",
@@ -46,19 +43,12 @@ LABELS = {
 }
 
 print("=" * 65)
-print("PHASE 3: STATISTICAL ANALYSIS")
+print("PORTUGUESE — PHASE 3: STATISTICAL ANALYSIS")
 print("=" * 65)
 print()
 
 # =============================================================================
 # PART 1 — PEARSON CORRELATION ANALYSIS
-# =============================================================================
-# Pearson's r measures the LINEAR relationship between two numeric variables.
-# r ranges from -1 (perfect negative) to +1 (perfect positive).
-# We also get a p-value: if p < 0.05, the correlation is statistically
-# significant (i.e. unlikely to be due to random chance).
-#
-# We test all numeric variables against G3 (excluding G1 and G2 — see thesis).
 # =============================================================================
 
 print("─" * 65)
@@ -78,19 +68,13 @@ correlation_results = []
 for var in numeric_vars:
     r, p = stats.pearsonr(df[var], df["G3"])
 
-    # Determine significance
     significant = "Yes ***" if p < 0.001 else ("Yes **" if p < 0.01 else ("Yes *" if p < 0.05 else "No"))
 
-    # Interpret strength of correlation (Cohen's conventions)
     abs_r = abs(r)
-    if abs_r >= 0.50:
-        strength = "Strong"
-    elif abs_r >= 0.30:
-        strength = "Moderate"
-    elif abs_r >= 0.10:
-        strength = "Weak"
-    else:
-        strength = "Negligible"
+    if abs_r >= 0.50:       strength = "Strong"
+    elif abs_r >= 0.30:     strength = "Moderate"
+    elif abs_r >= 0.10:     strength = "Weak"
+    else:                   strength = "Negligible"
 
     direction = "positive" if r > 0 else "negative"
     label     = LABELS.get(var, var)
@@ -110,7 +94,6 @@ print()
 print("Significance levels: * p<0.05  ** p<0.01  *** p<0.001")
 print()
 
-# Top 3 most correlated features
 corr_df = pd.DataFrame(correlation_results)
 top3 = corr_df.reindex(corr_df["r"].abs().sort_values(ascending=False).index).head(3)
 print("Top 3 predictors (by |r|):")
@@ -120,16 +103,6 @@ print()
 
 # =============================================================================
 # PART 2 — HYPOTHESIS TESTS: BINARY GROUPS vs G3
-# =============================================================================
-# For binary/categorical variables (e.g. sex, internet access), we split
-# students into two groups and test whether their G3 means differ significantly.
-#
-# We use TWO tests:
-#   t-test         → assumes normal distribution (parametric)
-#   Mann-Whitney U → does NOT assume normal distribution (non-parametric)
-#
-# Effect size: Cohen's d tells you HOW LARGE the difference is, not just
-# whether it's statistically significant. Small: 0.2, Medium: 0.5, Large: 0.8
 # =============================================================================
 
 print("=" * 65)
@@ -152,7 +125,6 @@ def interpret_d(d):
     elif abs_d >= 0.20: return "Small"
     else:               return "Negligible"
 
-# Each tuple: (column, value_group1, value_group2, full_label_group1, full_label_group2)
 binary_tests = [
     ("sex",        "F",   "M",   "Female",                "Male"),
     ("address",    "U",   "R",   "Urban",                 "Rural"),
@@ -162,7 +134,7 @@ binary_tests = [
     ("romantic",   "yes", "no",  "In a relationship",     "Not in a relationship"),
     ("schoolsup",  "yes", "no",  "Extra school support",  "No school support"),
     ("activities", "yes", "no",  "Extracurricular act.",  "No activities"),
-    ("higher",     "yes", "no",  "Wants higher education","Does not want higher education"),
+    ("higher",     "yes", "no",  "Wants higher education","Does not want higher edu."),
 ]
 
 hypothesis_results = []
@@ -201,13 +173,7 @@ for var, val1, val2, label1, label2 in binary_tests:
     })
 
 # =============================================================================
-# PART 3 — NORMALITY CHECK (for thesis completeness)
-# =============================================================================
-# Before using parametric tests (t-test), checks if G3 is normally
-# distributed. The Shapiro-Wilk test does this.
-# H0: the data IS normally distributed.
-# If p < 0.05 → reject H0 → data is NOT normal → non-parametric tests preferred.
-# This justifies reporting Mann-Whitney U alongside the t-test.
+# PART 3 — NORMALITY CHECK
 # =============================================================================
 
 print("=" * 65)
@@ -217,6 +183,7 @@ w_stat, p_norm = stats.shapiro(df["G3"])
 print(f"  Shapiro-Wilk: W = {w_stat:.4f},  p = {p_norm:.6f}")
 if p_norm < 0.05:
     print("  Result: G3 is NOT normally distributed (p < 0.05).")
+    print("  → This justifies using Mann-Whitney U (non-parametric) in your thesis.")
 else:
     print("  Result: G3 appears normally distributed (p >= 0.05).")
 print()
@@ -225,13 +192,14 @@ print()
 # PART 4 — SAVE RESULTS AS CSV
 # =============================================================================
 
-corr_df.to_csv("../results/results_correlations.csv", index=False)
+corr_df.to_csv("../results/por_results_correlations.csv", index=False)
 hyp_df = pd.DataFrame(hypothesis_results)
-hyp_df.to_csv("../results/results_hypothesis_tests.csv", index=False)
+hyp_df.to_csv("../results/por_results_hypothesis_tests.csv", index=False)
 
 print("=" * 65)
-print("PHASE 3 COMPLETE")
+print("PORTUGUESE PHASE 3 COMPLETE")
 print("=" * 65)
 print("Files saved:")
-print("  results_correlations.csv       — Pearson correlation table")
-print("  results_hypothesis_tests.csv   — Hypothesis test table")
+print("  ../results/por_results_correlations.csv")
+print("  ../results/por_results_hypothesis_tests.csv")
+print()

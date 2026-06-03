@@ -1,13 +1,15 @@
-#PHASE 4
-
 # =============================================================================
-# Run this AFTER phase1_data_setup.py.
-# Make sure student_preprocessed.csv is in the same folder.
+# BACHELOR THESIS - Student Performance Prediction
+# Phase 4: Machine Learning Models
+# =============================================================================
+# Run this AFTER mat_phase1_data_setup.py.
+# Make sure student_mat_preprocessed.csv is in the same folder.
 #
-# This script trains and evaluates three models:
+# This script trains and evaluates four models:
 #   1. Linear Regression  — predicts G3 as a numeric score (0–20)
 #   2. Logistic Regression — classifies pass (1) vs fail (0)
 #   3. Random Forest       — classifies pass (1) vs fail (0)
+#   4. Neural Network      — classifies pass (1) vs fail (0)
 #
 # Outputs:
 #   - Printed metrics for each model
@@ -24,6 +26,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.metrics import (
     r2_score, mean_absolute_error, mean_squared_error,
@@ -33,7 +36,7 @@ from sklearn.metrics import (
 from sklearn.preprocessing import StandardScaler
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("../data/student_preprocessed.csv")
+df = pd.read_csv("../data/student_mat_preprocessed.csv")
 
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams["figure.dpi"] = 150
@@ -139,9 +142,9 @@ ax.text(0.05, 0.92, f"R² = {r2:.3f}", transform=ax.transAxes,
         fontsize=11, color="#333333",
         bbox=dict(boxstyle="round,pad=0.3", facecolor="white", edgecolor="#cccccc"))
 plt.tight_layout()
-plt.savefig("../plots/plot7_linear_regression.png")
+plt.savefig("../plots/mat_plot7_linear_regression.png")
 plt.show()
-print("Plot 7 saved: plot7_linear_regression.png")
+print("Plot 7 saved: mat_plot7_linear_regression.png")
 print()
 
 # =============================================================================
@@ -214,7 +217,67 @@ print(classification_report(y_clf_test, y_pred_rf,
                              target_names=["Fail", "Pass"]))
 
 # =============================================================================
-# PLOT 8 — CONFUSION MATRICES (Logistic Regression & Random Forest)
+# MODEL 4 — NEURAL NETWORK (Multi-Layer Perceptron)
+# =============================================================================
+# A Neural Network learns non-linear patterns by passing data through
+# layers of interconnected nodes (neurons).
+#
+# Architecture used:
+#   - Input layer:   one node per feature
+#   - Hidden layers: two layers of 64 and 32 neurons (64, 32)
+#   - Output layer:  one node — pass (1) or fail (0)
+#
+# Key settings:
+#   hidden_layer_sizes=(64, 32) — two hidden layers, getting smaller
+#   activation="relu"           — ReLU is the standard activation function
+#   max_iter=1000               — enough iterations to converge
+#   early_stopping=True         — stops training if validation score stops improving
+#                                 (prevents overfitting on small datasets)
+#   random_state=42             — reproducibility
+#
+# Neural Networks REQUIRE scaled features — same scaler as Logistic Regression.
+# =============================================================================
+
+print("─" * 65)
+print("MODEL 4: Neural Network  (pass / fail classification)")
+print("─" * 65)
+
+nn = MLPClassifier(
+    hidden_layer_sizes=(32,),   # single smaller layer
+    activation="relu",
+    max_iter=2000,
+    early_stopping=True,
+    validation_fraction=0.1,
+    n_iter_no_change=20,        # be more patient before stopping
+    random_state=42
+)
+nn.fit(X_train_scaled, y_clf_train)
+y_pred_nn = nn.predict(X_test_scaled)
+
+acc_nn  = accuracy_score(y_clf_test, y_pred_nn)
+prec_nn = precision_score(y_clf_test, y_pred_nn)
+rec_nn  = recall_score(y_clf_test, y_pred_nn)
+f1_nn   = f1_score(y_clf_test, y_pred_nn)
+cv_acc_nn = cross_val_score(nn, X_train_scaled, y_clf_train, cv=5, scoring="accuracy")
+
+print(f"  Architecture:    Input → 64 → 32 → Output")
+print(f"  Activation:      ReLU")
+print(f"  Early stopping:  Yes (validation fraction = 10%)")
+print(f"  Iterations run:  {nn.n_iter_}")
+print()
+print(f"  Accuracy:        {acc_nn:.4f}")
+print(f"  Precision:       {prec_nn:.4f}")
+print(f"  Recall:          {rec_nn:.4f}")
+print(f"  F1 Score:        {f1_nn:.4f}")
+print(f"  CV Accuracy:     {cv_acc_nn.mean():.4f} ± {cv_acc_nn.std():.4f}")
+print()
+print("  Classification Report:")
+print(classification_report(y_clf_test, y_pred_nn,
+                             target_names=["Fail", "Pass"]))
+
+
+# =============================================================================
+# PLOT 8 — CONFUSION MATRICES (all three classifiers)
 # =============================================================================
 # A confusion matrix shows:
 #   True Positives  (TP): predicted Pass, actually Pass  ✓
@@ -222,12 +285,12 @@ print(classification_report(y_clf_test, y_pred_rf,
 #   False Positives (FP): predicted Pass, actually Fail  ✗ (Type I error)
 #   False Negatives (FN): predicted Fail, actually Pass  ✗ (Type II error)
 
-fig, axes = plt.subplots(1, 2, figsize=(10, 4))
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
 for ax, y_pred, title in zip(
     axes,
-    [y_pred_log, y_pred_rf],
-    ["Logistic Regression", "Random Forest"]
+    [y_pred_log, y_pred_rf, y_pred_nn],
+    ["Logistic Regression", "Random Forest", "Neural Network"]
 ):
     cm = confusion_matrix(y_clf_test, y_pred)
     sns.heatmap(cm, annot=True, fmt="d", cmap="Blues",
@@ -239,9 +302,9 @@ for ax, y_pred, title in zip(
     ax.set_ylabel("Actual Label", fontsize=11)
 
 plt.tight_layout()
-plt.savefig("../plots/plot8_confusion_matrices.png")
+plt.savefig("../plots/mat_plot8_confusion_matrices.png")
 plt.show()
-print("Plot 8 saved: plot8_confusion_matrices.png")
+print("Plot 8 saved: mat_plot8_confusion_matrices.png")
 print()
 
 # =============================================================================
@@ -272,9 +335,9 @@ ax.axvline(x=top_importances.mean(), color="#C44E52", linestyle="--",
            linewidth=1.2, label=f"Mean importance ({top_importances.mean():.3f})")
 ax.legend(fontsize=10)
 plt.tight_layout()
-plt.savefig("../plots/plot9_feature_importances.png")
+plt.savefig("../plots/mat_plot9_feature_importances.png")
 plt.show()
-print("Plot 9 saved: plot9_feature_importances.png")
+print("Plot 9 saved: mat_plot9_feature_importances.png")
 print()
 
 # =============================================================================
@@ -284,45 +347,45 @@ print()
 # Makes it easy to see at a glance which model performs better and where.
 
 metrics = {
-    "Accuracy":  [acc_log,  acc_rf],
-    "Precision": [prec_log, prec_rf],
-    "Recall":    [rec_log,  rec_rf],
-    "F1 Score":  [f1_log,   f1_rf],
+    "Accuracy":  [acc_log,  acc_rf,  acc_nn],
+    "Precision": [prec_log, prec_rf, prec_nn],
+    "Recall":    [rec_log,  rec_rf,  rec_nn],
+    "F1 Score":  [f1_log,   f1_rf,   f1_nn],
 }
 
 x      = np.arange(len(metrics))
-width  = 0.30
+width  = 0.22
 labels = list(metrics.keys())
 log_vals = [metrics[m][0] for m in labels]
 rf_vals  = [metrics[m][1] for m in labels]
+nn_vals  = [metrics[m][2] for m in labels]
 
-fig, ax = plt.subplots(figsize=(8, 5))
-bars1 = ax.bar(x - width / 2, log_vals, width, label="Logistic Regression",
+fig, ax = plt.subplots(figsize=(9, 5))
+bars1 = ax.bar(x - width, log_vals, width, label="Logistic Regression",
                color="#4C72B0", edgecolor="white")
-bars2 = ax.bar(x + width / 2, rf_vals,  width, label="Random Forest",
+bars2 = ax.bar(x,          rf_vals,  width, label="Random Forest",
                color="#55A868", edgecolor="white")
+bars3 = ax.bar(x + width,  nn_vals,  width, label="Neural Network",
+               color="#C44E52", edgecolor="white")
 
-# Add value labels on top of each bar
-for bar in bars1:
-    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.005,
-            f"{bar.get_height():.2f}", ha="center", va="bottom", fontsize=9)
-for bar in bars2:
-    ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.005,
-            f"{bar.get_height():.2f}", ha="center", va="bottom", fontsize=9)
+for bars in [bars1, bars2, bars3]:
+    for bar in bars:
+        ax.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + 0.005,
+                f"{bar.get_height():.2f}", ha="center", va="bottom", fontsize=8)
 
 ax.set_title("Model Comparison — Classification Metrics",
              fontsize=13, fontweight="bold")
 ax.set_ylabel("Score", fontsize=12)
 ax.set_xticks(x)
 ax.set_xticklabels(labels, fontsize=11)
-ax.set_ylim(0, 1.12)
-ax.axhline(y=0.671, color="#C44E52", linestyle="--", linewidth=1,
+ax.set_ylim(0, 1.15)
+ax.axhline(y=0.671, color="#888888", linestyle="--", linewidth=1,
            label="Baseline (always predict pass = 67.1%)")
-ax.legend(fontsize=10)
+ax.legend(fontsize=9)
 plt.tight_layout()
-plt.savefig("../plots/plot10_model_comparison.png")
+plt.savefig("../plots/mat_plot10_model_comparison.png")
 plt.show()
-print("Plot 10 saved: plot10_model_comparison.png")
+print("Plot 10 saved: mat_plot10_model_comparison.png")
 print()
 
 # =============================================================================
@@ -333,23 +396,25 @@ metrics_data = {
     "Model": [
         "Linear Regression",
         "Logistic Regression",
-        "Random Forest"
+        "Random Forest",
+        "Neural Network"
     ],
-    "R²":        [round(r2, 4),   "-",            "-"],
-    "MAE":       [round(mae, 4),  "-",            "-"],
-    "RMSE":      [round(rmse, 4), "-",            "-"],
-    "Accuracy":  ["-", round(acc_log, 4),  round(acc_rf, 4)],
-    "Precision": ["-", round(prec_log, 4), round(prec_rf, 4)],
-    "Recall":    ["-", round(rec_log, 4),  round(rec_rf, 4)],
-    "F1 Score":  ["-", round(f1_log, 4),   round(f1_rf, 4)],
+    "R²":        [round(r2, 4),   "-",             "-",            "-"],
+    "MAE":       [round(mae, 4),  "-",             "-",            "-"],
+    "RMSE":      [round(rmse, 4), "-",             "-",            "-"],
+    "Accuracy":  ["-", round(acc_log, 4),  round(acc_rf, 4),  round(acc_nn, 4)],
+    "Precision": ["-", round(prec_log, 4), round(prec_rf, 4), round(prec_nn, 4)],
+    "Recall":    ["-", round(rec_log, 4),  round(rec_rf, 4),  round(rec_nn, 4)],
+    "F1 Score":  ["-", round(f1_log, 4),   round(f1_rf, 4),   round(f1_nn, 4)],
     "CV Score":  [
         f"{cv_r2.mean():.4f} ± {cv_r2.std():.4f}",
         f"{cv_acc_log.mean():.4f} ± {cv_acc_log.std():.4f}",
-        f"{cv_acc_rf.mean():.4f} ± {cv_acc_rf.std():.4f}"
+        f"{cv_acc_rf.mean():.4f} ± {cv_acc_rf.std():.4f}",
+        f"{cv_acc_nn.mean():.4f} ± {cv_acc_nn.std():.4f}"
     ],
 }
 
-pd.DataFrame(metrics_data).to_csv("../results/results_model_metrics.csv", index=False)
+pd.DataFrame(metrics_data).to_csv("../results/mat_results_model_metrics.csv", index=False)
 
 # =============================================================================
 # SUMMARY
@@ -370,9 +435,16 @@ print("  Random Forest:")
 print(f"    Accuracy = {acc_rf:.4f}  |  Precision = {prec_rf:.4f}  "
       f"|  Recall = {rec_rf:.4f}  |  F1 = {f1_rf:.4f}")
 print()
+print("  Neural Network:")
+print(f"    Accuracy = {acc_nn:.4f}  |  Precision = {prec_nn:.4f}  "
+      f"|  Recall = {rec_nn:.4f}  |  F1 = {f1_nn:.4f}")
+print()
 
-best_clf = "Random Forest" if f1_rf > f1_log else "Logistic Regression"
-print(f"  Best classifier (by F1): {best_clf}")
+best_f1  = max(f1_log, f1_rf, f1_nn)
+best_clf = {f1_log: "Logistic Regression",
+            f1_rf:  "Random Forest",
+            f1_nn:  "Neural Network"}[best_f1]
+print(f"  Best classifier (by F1): {best_clf}  (F1 = {best_f1:.4f})")
 print()
 print("Files saved:")
 print("  plot7_linear_regression.png")
@@ -380,3 +452,4 @@ print("  plot8_confusion_matrices.png")
 print("  plot9_feature_importances.png")
 print("  plot10_model_comparison.png")
 print("  results_model_metrics.csv")
+print()

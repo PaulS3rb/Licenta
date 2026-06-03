@@ -1,0 +1,14 @@
+Variable,r,p-value,Significant,Strength,Direction
+Age,-0.1065,0.0066,Yes,Weak,negative
+Mother's Education,0.2402,0.0,Yes,Weak,positive
+Father's Education,0.2118,0.0,Yes,Weak,positive
+Travel Time to School,-0.1272,0.0012,Yes,Weak,negative
+Weekly Study Time,0.2498,0.0,Yes,Weak,positive
+Past Class Failures,-0.3933,0.0,Yes,Moderate,negative
+Family Relationship Quality,0.0634,0.1068,No,Negligible,positive
+Free Time After School,-0.1227,0.0017,Yes,Weak,negative
+Going Out with Friends,-0.0876,0.0256,Yes,Negligible,negative
+Workday Alcohol Consumption,-0.2047,0.0,Yes,Weak,negative
+Weekend Alcohol Consumption,-0.1766,0.0,Yes,Weak,negative
+Current Health Status,-0.0989,0.0117,Yes,Negligible,negative
+Number of Absences,-0.0914,0.0199,Yes,Negligible,negative

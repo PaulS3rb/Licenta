@@ -1,50 +1,48 @@
-#PHASE 1
-
-
 # =============================================================================
-# Dataset: UCI Student Performance Dataset (Cortez & Silva, 2008)
+# BACHELOR THESIS - Student Performance Prediction
+# Portuguese Dataset — Phase 1: Data Setup & Preprocessing
+# =============================================================================
+# Run this script from inside the scripts/ folder.
+# Reads from:  ../data/student-por.csv
+# Writes to:   ../data/student_por_preprocessed.csv
 # =============================================================================
 
+import os
 import pandas as pd
 import numpy as np
 
+# ── ENSURE OUTPUT FOLDERS EXIST ───────────────────────────────────────────────
+os.makedirs("../data",    exist_ok=True)
+os.makedirs("../plots",   exist_ok=True)
+os.makedirs("../results", exist_ok=True)
+
 # ── 1. LOAD THE DATA ──────────────────────────────────────────────────────────
-# The dataset comes in two files:
-#   student-mat.csv  → Math course
-#   student-por.csv  → Portuguese language course
-# We will work with the Math dataset for this thesis.
+# Portuguese language dataset — 649 students, same 33-variable structure as Math.
+# The separator in these CSV files is a semicolon (;), not a comma.
 
-
-df = pd.read_csv("../data/student-mat.csv", sep=";")
+df = pd.read_csv("../data/student-por.csv", sep=";")
 
 print("=" * 60)
-print("STEP 1: Dataset loaded successfully")
+print("PORTUGUESE — PHASE 1: Data Setup")
 print("=" * 60)
-print(f"Rows: {df.shape[0]}")
+print(f"Rows:    {df.shape[0]}")
 print(f"Columns: {df.shape[1]}")
 print()
 
 # ── 2. FIRST LOOK ─────────────────────────────────────────────────────────────
-# Always inspect the first few rows to understand the structure.
-
 print("First 5 rows:")
 print(df.head())
 print()
 
-# .info() shows column names, data types, and whether there are missing values.
 print("Dataset info:")
 df.info()
 print()
 
-# Basic statistics for all numeric columns.
 print("Summary statistics:")
 print(df.describe())
 print()
 
 # ── 3. CHECK FOR MISSING VALUES ───────────────────────────────────────────────
-# The UCI student dataset is well-curated and typically has no missing values,
-# but we always check — this is good practice and important for the thesis.
-
 print("=" * 60)
 print("STEP 2: Checking for missing values")
 print("=" * 60)
@@ -52,11 +50,7 @@ missing = df.isnull().sum()
 print(missing[missing > 0] if missing.sum() > 0 else "No missing values found.")
 print()
 
-# ── 4. UNDERSTAND THE TARGET VARIABLE ────────────────────────────────────────
-# G3 = final grade (0–20 scale) — this is what we want to predict.
-# G1 = first period grade, G2 = second period grade (also 0–20).
-#
-
+# ── 4. TARGET VARIABLE ────────────────────────────────────────────────────────
 print("=" * 60)
 print("STEP 3: Target variable — G3 (final grade)")
 print("=" * 60)
@@ -65,11 +59,9 @@ print(f"\nGrade distribution:\n{df['G3'].value_counts().sort_index()}")
 print()
 
 # ── 5. CREATE BINARY PASS/FAIL COLUMN ────────────────────────────────────────
-# For classification models (logistic regression, random forest), we need
-# a binary target. In the Portuguese school system, 10/20 is the pass mark.
+# Same passing threshold as Math: 10/20 in the Portuguese school system.
 
 df["pass_fail"] = (df["G3"] >= 10).astype(int)
-# 1 = pass (G3 >= 10), 0 = fail (G3 < 10)
 
 pass_count = df["pass_fail"].value_counts()
 print("=" * 60)
@@ -81,9 +73,6 @@ print(f"Pass rate: {pass_count.get(1, 0) / len(df) * 100:.1f}%")
 print()
 
 # ── 6. ENCODE CATEGORICAL VARIABLES ──────────────────────────────────────────
-
-
-
 categorical_cols = df.select_dtypes(include="object").columns.tolist()
 print("=" * 60)
 print("STEP 5: Encoding categorical variables")
@@ -98,23 +87,14 @@ print(f"Shape after encoding:  {df_encoded.shape}")
 print()
 
 # ── 7. DEFINE FEATURE SETS ────────────────────────────────────────────────────
-# We define two feature sets:
-#   X_regression  → for linear regression (predicting G3 as a number)
-#   X_classification → for logistic regression & random forest (predicting pass/fail)
-#
-# We EXCLUDE G1 and G2 from the main feature sets.
-# Using G1/G2 to predict G3 would give artificially high accuracy,
-# because they are interim grades from the same school year.
+# Exclude G1 and G2 (data leakage) and the two target columns.
 
-
-# Columns to always exclude from features
 exclude_cols = ["G3", "pass_fail", "G1", "G2"]
-
 feature_cols = [col for col in df_encoded.columns if col not in exclude_cols]
 
-X = df_encoded[feature_cols]        # Features (input variables)
-y_regression = df_encoded["G3"]     # Target for regression (numeric grade)
-y_classification = df_encoded["pass_fail"]  # Target for classification (0/1)
+X                = df_encoded[feature_cols]
+y_regression     = df_encoded["G3"]
+y_classification = df_encoded["pass_fail"]
 
 print("=" * 60)
 print("STEP 6: Feature sets defined")
@@ -124,24 +104,23 @@ print(f"Feature columns:\n{feature_cols}")
 print()
 
 # ── 8. SAVE PREPROCESSED DATA ─────────────────────────────────────────────────
-# Save the encoded dataframe so we can reuse it in later phases
-# without repeating all the preprocessing steps.
+# Saved as student_por_preprocessed.csv to avoid overwriting the Math dataset.
 
-df_encoded.to_csv("../data/student_preprocessed.csv", index=False)
+df_encoded.to_csv("../data/student_por_preprocessed.csv", index=False)
 
 print("=" * 60)
 print("STEP 7: Preprocessed data saved")
 print("=" * 60)
-print("File saved: student_preprocessed.csv")
+print("File saved: ../data/student_por_preprocessed.csv")
 print()
 
 # ── 9. SUMMARY ────────────────────────────────────────────────────────────────
-
 print("=" * 60)
-print("PHASE 1 COMPLETE — Summary")
+print("PHASE 1 COMPLETE — Summary (Portuguese)")
 print("=" * 60)
 print(f"  Total students:      {len(df)}")
 print(f"  Features available:  {X.shape[1]}")
 print(f"  Pass rate:           {df['pass_fail'].mean() * 100:.1f}%")
 print(f"  Mean final grade:    {df['G3'].mean():.2f} / 20")
 print(f"  Missing values:      {df.isnull().sum().sum()}")
+print()
