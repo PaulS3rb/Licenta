@@ -1,0 +1,5 @@
+Model,R²,MAE,RMSE,Accuracy,Precision,Recall,F1 Score,CV Score
+Linear Regression,0.1602,2.1564,2.8618,-,-,-,-,0.1639 ± 0.1081
+Logistic Regression,-,-,-,0.8769,0.9231,0.9391,0.931,0.8343 ± 0.0154
+Random Forest,-,-,-,0.8846,0.8906,0.9913,0.9383,0.8304 ± 0.0330
+Neural Network,-,-,-,0.8077,0.8947,0.887,0.8908,0.8189 ± 0.0173
