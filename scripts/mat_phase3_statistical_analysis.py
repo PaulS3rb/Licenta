@@ -225,9 +225,9 @@ print()
 # PART 4 — SAVE RESULTS AS CSV
 # =============================================================================
 
-corr_df.to_csv("../results/results_correlations.csv", index=False)
+corr_df.to_csv("../results/mat_results_correlations.csv", index=False)
 hyp_df = pd.DataFrame(hypothesis_results)
-hyp_df.to_csv("../results/results_hypothesis_tests.csv", index=False)
+hyp_df.to_csv("../results/mat_results_hypothesis_tests.csv", index=False)
 
 print("=" * 65)
 print("PHASE 3 COMPLETE")

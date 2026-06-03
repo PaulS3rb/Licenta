@@ -127,12 +127,12 @@ print()
 # Save the encoded dataframe so we can reuse it in later phases
 # without repeating all the preprocessing steps.
 
-df_encoded.to_csv("../data/student_preprocessed.csv", index=False)
+df_encoded.to_csv("../data/student_mat_preprocessed.csv", index=False)
 
 print("=" * 60)
 print("STEP 7: Preprocessed data saved")
 print("=" * 60)
-print("File saved: student_preprocessed.csv")
+print("File saved: student_mat_preprocessed.csv")
 print()
 
 # ── 9. SUMMARY ────────────────────────────────────────────────────────────────

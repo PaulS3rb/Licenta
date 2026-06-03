@@ -43,9 +43,9 @@ print()
 
 mat_report = pd.read_csv("../results/mat_results_final_report.csv")
 por_report = pd.read_csv("../results/por_results_final_report.csv")
-mat_corr   = pd.read_csv("../results/results_correlations.csv")
+mat_corr   = pd.read_csv("../results/mat_results_correlations.csv")
 por_corr   = pd.read_csv("../results/por_results_correlations.csv")
-mat_hyp    = pd.read_csv("../results/results_hypothesis_tests.csv")
+mat_hyp    = pd.read_csv("../results/mat_results_hypothesis_tests.csv")
 por_hyp    = pd.read_csv("../results/por_results_hypothesis_tests.csv")
 
 print("All result files loaded successfully.")

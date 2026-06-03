@@ -3,7 +3,7 @@
 # Phase 5: Evaluation & Thesis Conclusion
 # =============================================================================
 # Run this AFTER all previous phases.
-# Make sure student_preprocessed.csv and student-mat.csv are in the same folder.
+# Make sure student_mat_preprocessed.csv and student-mat.csv are in the same folder.
 #
 # This script:
 #   1. Re-trains all three models (self-contained — no need to re-run Phase 4)
@@ -31,7 +31,7 @@ from sklearn.metrics import (
 from sklearn.preprocessing import StandardScaler
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("../data/student_preprocessed.csv")
+df = pd.read_csv("../data/student_mat_preprocessed.csv")
 
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams["figure.dpi"] = 150
@@ -214,7 +214,7 @@ ax.legend(fontsize=10)
 ax.set_xlim(-0.01, 1.01)
 ax.set_ylim(-0.01, 1.01)
 plt.tight_layout()
-plt.savefig("../plots/mat_plot11_roc_curves.png")
+plt.savefig("../plots/++mat_plot11_roc_curves.png")
 plt.show()
 print("Plot 11 saved: ../plots/mat_plot11_roc_curves.png")
 
@@ -405,4 +405,3 @@ print("  ../plots/mat_plot11_roc_curves.png")
 print("  ../plots/mat_plot12_precision_recall.png")
 print("  ../results/mat_results_final_report.csv")
 print()
-print("All 5 Math phases complete. Your thesis pipeline is finished.")

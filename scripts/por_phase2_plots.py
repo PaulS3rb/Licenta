@@ -182,4 +182,3 @@ print(f"  Number of Absences — G3 corr: {corr_matrix_raw['G3']['absences']:.2f
 print(f"  Weekly Study Time  — G3 corr: {corr_matrix_raw['G3']['studytime']:.2f}")
 print()
 print("All 6 plots saved to ../plots/")
-print("Ready for Portuguese Phase 3: Statistical Analysis")

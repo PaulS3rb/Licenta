@@ -2,7 +2,7 @@
 
 
 # =============================================================================
-# Run this AFTER phase1_data_setup.py.
+# Run this AFTER mat_phase1_data_setup.py.
 # This script produces 6 plots saved as PNG files.
 # =============================================================================
 
@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ── SETUP ─────────────────────────────────────────────────────────────────────
-df = pd.read_csv("../data/student_preprocessed.csv")
+df = pd.read_csv("../data/student_mat_preprocessed.csv")
 
 df_raw = pd.read_csv("../data/student-mat.csv", sep=";")
 df_raw["pass_fail"] = (df_raw["G3"] >= 10).astype(int)
@@ -62,9 +62,9 @@ ax.set_xlabel(LABELS["G3"], fontsize=12)
 ax.set_ylabel("Number of Students", fontsize=12)
 ax.legend()
 plt.tight_layout()
-plt.savefig("../plots/plot1_grade_distribution.png")
+plt.savefig("../plots/mat_plot1_grade_distribution.png")
 plt.show()
-print("Plot 1 saved: plot1_grade_distribution.png")
+print("Plot 1 saved: mat_plot1_grade_distribution.png")
 
 # ── PLOT 2: Pass vs Fail Count ────────────────────────────────────────────────
 # Simple bar chart showing class balance.
@@ -85,9 +85,9 @@ ax.set_xlabel("Outcome", fontsize=12)
 ax.set_ylabel("Number of Students", fontsize=12)
 ax.set_ylim(0, max(counts.values) * 1.15)
 plt.tight_layout()
-plt.savefig("../plots/plot2_pass_fail.png")
+plt.savefig("../plots/mat_plot2_pass_fail.png")
 plt.show()
-print("Plot 2 saved: plot2_pass_fail.png")
+print("Plot 2 saved: mat_plot2_pass_fail.png")
 
 # ── PLOT 3: Study Time vs Final Grade ─────────────────────────────────────────
 # studytime is coded 1–4 (1=<2h, 2=2–5h, 3=5–10h, 4=>10h per week).
@@ -108,9 +108,9 @@ ax.set_xlabel(LABELS["studytime"], fontsize=12)
 ax.set_ylabel(LABELS["G3"], fontsize=12)
 ax.legend()
 plt.tight_layout()
-plt.savefig("../plots/plot3_studytime_grade.png")
+plt.savefig("../plots/mat_plot3_studytime_grade.png")
 plt.show()
-print("Plot 3 saved: plot3_studytime_grade.png")
+print("Plot 3 saved: mat_plot3_studytime_grade.png")
 
 # ── PLOT 4: Absences vs Final Grade ───────────────────────────────────────────
 # Scatterplot with a regression line to show the trend.
@@ -125,9 +125,9 @@ ax.set_title(f"{LABELS['absences']} vs {LABELS['G3']}", fontsize=14, fontweight=
 ax.set_xlabel(LABELS["absences"], fontsize=12)
 ax.set_ylabel(LABELS["G3"], fontsize=12)
 plt.tight_layout()
-plt.savefig("../plots/plot4_absences_grade.png")
+plt.savefig("../plots/mat_plot4_absences_grade.png")
 plt.show()
-print("Plot 4 saved: plot4_absences_grade.png")
+print("Plot 4 saved: mat_plot4_absences_grade.png")
 
 # ── PLOT 5: Correlation Heatmap ────────────────────────────────────────────────
 # Shows correlations between all numeric variables.
@@ -152,9 +152,9 @@ ax.set_title("Correlation Heatmap — Numeric Variables", fontsize=14, fontweigh
 ax.set_xticklabels(ax.get_xticklabels(), rotation=35, ha="right", fontsize=8)
 ax.set_yticklabels(ax.get_yticklabels(), rotation=0, fontsize=8)
 plt.tight_layout()
-plt.savefig("../plots/plot5_correlation_heatmap.png")
+plt.savefig("../plots/mat_plot5_correlation_heatmap.png")
 plt.show()
-print("Plot 5 saved: plot5_correlation_heatmap.png")
+print("Plot 5 saved: mat_plot5_correlation_heatmap.png")
 
 # ── PLOT 6: Mother's Education vs Final Grade ──────────────────────────────────
 # Medu: 0=none, 1=primary, 2=5th–9th grade, 3=secondary, 4=higher education.
@@ -182,9 +182,9 @@ ax.tick_params(axis="x", labelrotation=15)
 plt.setp(ax.get_xticklabels(), ha="right")
 ax.legend()
 plt.tight_layout()
-plt.savefig("../plots/plot6_medu_grade.png")
+plt.savefig("../plots/mat_plot6_medu_grade.png")
 plt.show()
-print("Plot 6 saved: plot6_medu_grade.png")
+print("Plot 6 saved: mat_plot6_medu_grade.png")
 
 # ── SUMMARY ───────────────────────────────────────────────────────────────────
 corr_matrix_raw = df_raw[numeric_cols].corr()
