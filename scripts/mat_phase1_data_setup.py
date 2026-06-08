@@ -12,7 +12,6 @@ import numpy as np
 # The dataset comes in two files:
 #   student-mat.csv  → Math course
 #   student-por.csv  → Portuguese language course
-# We will work with the Math dataset for this thesis.
 
 
 df = pd.read_csv("../data/student-mat.csv", sep=";")
@@ -124,8 +123,7 @@ print(f"Feature columns:\n{feature_cols}")
 print()
 
 # ── 8. SAVE PREPROCESSED DATA ─────────────────────────────────────────────────
-# Save the encoded dataframe so we can reuse it in later phases
-# without repeating all the preprocessing steps.
+
 
 df_encoded.to_csv("../data/student_mat_preprocessed.csv", index=False)
 
