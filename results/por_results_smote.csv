@@ -1,0 +1,7 @@
+Model,Version,accuracy,f1,fail_recall,fail_caught,fail_missed
+Logistic Regression,Original,0.7923,0.8789,0.25,5,12
+Logistic Regression,SMOTE,0.7615,0.8558,0.35,7,18
+Random Forest,Original,0.8077,0.8899,0.2,4,9
+Random Forest,SMOTE,0.7615,0.8584,0.25,5,16
+Neural Network,Original,0.8,0.887,0.1,2,8
+Neural Network,SMOTE,0.6385,0.7638,0.35,7,34
