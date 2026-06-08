@@ -57,6 +57,9 @@ LABELS = {
     "Walc":       "Weekend Alcohol Consumption",
     "health":     "Current Health Status",
     "absences":   "Number of Absences",
+    "paid_yes":   "Extra paid classes",
+    "higher":     "Wants higher education",
+    "schoolsup_yes": "Extra educational support"
 }
 
 # ── DEFINE FEATURES AND TARGETS ───────────────────────────────────────────────

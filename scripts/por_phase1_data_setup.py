@@ -18,7 +18,6 @@ os.makedirs("../results", exist_ok=True)
 
 # ── 1. LOAD THE DATA ──────────────────────────────────────────────────────────
 # Portuguese language dataset — 649 students, same 33-variable structure as Math.
-# The separator in these CSV files is a semicolon (;), not a comma.
 
 df = pd.read_csv("../data/student-por.csv", sep=";")
 

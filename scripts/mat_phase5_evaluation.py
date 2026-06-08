@@ -3,7 +3,7 @@
 # Phase 5: Evaluation & Thesis Conclusion
 # =============================================================================
 # Run this AFTER all previous phases.
-# Make sure student_mat_preprocessed.csv and student-mat.csv are in the same folder.
+# Make sure student_preprocessed.csv and student-mat.csv are in the same folder.
 #
 # This script:
 #   1. Re-trains all three models (self-contained — no need to re-run Phase 4)
@@ -206,7 +206,7 @@ ax.plot([0, 1], [0, 1], color="#888888", linestyle="--",
 ax.fill_between(fpr_log, tpr_log, alpha=0.07, color="#4C72B0")
 ax.fill_between(fpr_rf,  tpr_rf,  alpha=0.07, color="#55A868")
 ax.fill_between(fpr_nn,  tpr_nn,  alpha=0.07, color="#C44E52")
-ax.set_title("ROC Curves — Logistic Regression vs Random Forest",
+ax.set_title("ROC Curves — All Classifiers (Mathematics)",
              fontsize=13, fontweight="bold")
 ax.set_xlabel("False Positive Rate", fontsize=12)
 ax.set_ylabel("True Positive Rate (Recall)", fontsize=12)
@@ -214,7 +214,7 @@ ax.legend(fontsize=10)
 ax.set_xlim(-0.01, 1.01)
 ax.set_ylim(-0.01, 1.01)
 plt.tight_layout()
-plt.savefig("../plots/++mat_plot11_roc_curves.png")
+plt.savefig("../plots/mat_plot11_roc_curves.png")
 plt.show()
 print("Plot 11 saved: ../plots/mat_plot11_roc_curves.png")
 
@@ -405,3 +405,4 @@ print("  ../plots/mat_plot11_roc_curves.png")
 print("  ../plots/mat_plot12_precision_recall.png")
 print("  ../results/mat_results_final_report.csv")
 print()
+print("All 5 Math phases complete. Your thesis pipeline is finished.")
