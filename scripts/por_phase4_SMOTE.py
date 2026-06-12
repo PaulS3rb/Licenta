@@ -1,20 +1,7 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Portuguese Dataset — Phase 4b: SMOTE
 # =============================================================================
-# Run this AFTER por_phase4_ml_models.py.
-# Reads from:  ../data/student_por_preprocessed.csv
-# Writes to:   ../plots/por_plot_smote_comparison.png
-#              ../plots/por_plot_smote_confusion.png
-#              ../results/por_results_smote.csv
-#
-# Note: The Portuguese dataset has a more severe class imbalance (84.6% pass)
-# with only 100 failing students total. SMOTE is expected to have an even
-# larger effect here than in Mathematics.
-#
-# Install imbalanced-learn if needed:
-#   pip install imbalanced-learn --break-system-packages
-# =============================================================================
+
 
 import pandas as pd
 import numpy as np

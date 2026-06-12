@@ -1,9 +1,6 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Phase 6: Math vs Portuguese — Cross-Subject Comparison
 # =============================================================================
-# Run this AFTER all Math phases (phase1–5) AND all Portuguese phases
-# (por_phase1–5) have been completed successfully.
 #
 # Reads from:  ../results/results_final_report.csv
 #              ../results/por_results_final_report.csv
@@ -215,7 +212,7 @@ print("Comparison Plot 2 saved: ../plots/comparison_plot2_all_metrics.png")
 # PLOT 3 — PEARSON CORRELATION COMPARISON (horizontal bar chart)
 # =============================================================================
 # Shows both correlation coefficients side by side for each variable.
-# Makes it easy to spot which variables behave differently across subjects.
+
 
 vars_ordered = corr_merged.sort_values("r_mat", key=abs, ascending=True)["Variable"].tolist()
 r_mat_vals   = corr_merged.set_index("Variable").loc[vars_ordered, "r_mat"].tolist()
@@ -512,14 +509,14 @@ mat_he = mat_hyp[mat_hyp["Variable"] == "Wants Higher Education"]["Cohen's d"].v
 por_he = por_hyp[por_hyp["Variable"] == "Wants Higher Education"]["Cohen's d"].values[0]
 print(f"     Math Cohen's d = {mat_he}")
 print(f"     Por  Cohen's d = {por_he}")
-print(f"     → Large effect in both; strongest predictor across both subjects.")
+print(f"     Large effect in both; strongest predictor across both subjects.")
 print()
 print("  5. PAST FAILURES: CONSISTENT ACROSS BOTH SUBJECTS")
 mat_f = mat_corr[mat_corr["Variable"] == "Past Class Failures"]["r"].values[0]
 por_f = por_corr[por_corr["Variable"] == "Past Class Failures"]["r"].values[0]
 print(f"     Math r = {mat_f}")
 print(f"     Por  r = {por_f}")
-print(f"     → Strongest numeric predictor in both subjects.")
+print(f"     Strongest numeric predictor in both subjects.")
 print()
 print("Files saved:")
 print("  ../plots/comparison_plot1_model_f1.png")

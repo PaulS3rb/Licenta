@@ -1,24 +1,3 @@
-# =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
-# Phase 4b: SMOTE — Class Imbalance Mitigation
-# =============================================================================
-# Run this AFTER phase4_ml_models.py.
-# Reads from:  ../data/student_preprocessed.csv
-# Writes to:   ../plots/mat_plot_smote_comparison.png
-#              ../plots/mat_plot_smote_confusion.png
-#              ../results/mat_results_smote.csv
-#
-# What SMOTE does:
-#   The Synthetic Minority Oversampling Technique generates new synthetic
-#   training examples for the minority class (Fail) by interpolating between
-#   existing minority-class observations in feature space.
-#   SMOTE is applied ONLY to the training set — the test set remains unchanged
-#   so that evaluation reflects real-world class proportions.
-#
-# Install imbalanced-learn if needed:
-#   pip install imbalanced-learn --break-system-packages
-# =============================================================================
-
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -309,6 +288,3 @@ print("Files saved:")
 print("  ../plots/mat_plot_smote_comparison.png")
 print("  ../plots/mat_plot_smote_confusion.png")
 print("  ../results/mat_results_smote.csv")
-print()
-print("Key: SMOTE improves Fail Recall at the cost of some Pass F1.")
-print("This trade-off is the expected and documented behaviour of oversampling.")

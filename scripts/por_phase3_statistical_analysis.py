@@ -1,12 +1,7 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Portuguese Dataset — Phase 3: Statistical Analysis
 # =============================================================================
-# Run this AFTER por_phase1_data_setup.py and por_phase2_eda.py.
-# Reads from:  ../data/student-por.csv
-# Writes to:   ../results/por_results_correlations.csv
-#              ../results/por_results_hypothesis_tests.csv
-# =============================================================================
+
 
 import pandas as pd
 import numpy as np

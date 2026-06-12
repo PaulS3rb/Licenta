@@ -1,11 +1,8 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Portuguese Dataset — Phase 1: Data Setup & Preprocessing
 # =============================================================================
-# Run this script from inside the scripts/ folder.
-# Reads from:  ../data/student-por.csv
-# Writes to:   ../data/student_por_preprocessed.csv
-# =============================================================================
+
+
 
 import os
 import pandas as pd

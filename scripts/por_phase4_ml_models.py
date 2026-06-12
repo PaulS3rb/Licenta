@@ -1,12 +1,7 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Portuguese Dataset — Phase 4: Machine Learning Models
 # =============================================================================
-# Run this AFTER por_phase1_data_setup.py.
-# Reads from:  ../data/student_por_preprocessed.csv
-# Writes to:   ../plots/por_plot7_*.png … ../plots/por_plot10_*.png
-#              ../results/por_results_model_metrics.csv
-# =============================================================================
+
 
 import pandas as pd
 import numpy as np

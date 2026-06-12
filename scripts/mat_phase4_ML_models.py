@@ -1,9 +1,6 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Phase 4: Machine Learning Models
 # =============================================================================
-# Run this AFTER mat_phase1_data_setup.py.
-# Make sure student_mat_preprocessed.csv is in the same folder.
 #
 # This script trains and evaluates four models:
 #   1. Linear Regression  — predicts G3 as a numeric score (0–20)
@@ -11,13 +8,6 @@
 #   3. Random Forest       — classifies pass (1) vs fail (0)
 #   4. Neural Network      — classifies pass (1) vs fail (0)
 #
-# Outputs:
-#   - Printed metrics for each model
-#   - plot7_linear_regression.png
-#   - plot8_confusion_matrices.png
-#   - plot9_feature_importances.png
-#   - plot10_model_comparison.png
-#   - results_model_metrics.csv
 # =============================================================================
 
 import pandas as pd
@@ -88,14 +78,10 @@ print(f"Training samples: {len(X_train)}  |  Test samples: {len(X_test)}")
 print()
 
 # ── FEATURE SCALING ───────────────────────────────────────────────────────────
-# Logistic Regression is sensitive to feature scale — a variable ranging
-# 0–75 (absences) would dominate one ranging 1–4 (studytime) without scaling.
-# We scale AFTER the train/test split to avoid data leakage from the test set.
-# Random Forest does NOT need scaling (tree-based models are scale-invariant).
 
 scaler  = StandardScaler()
-X_train_scaled = scaler.fit_transform(X_train)  # fit on train only
-X_test_scaled  = scaler.transform(X_test)        # apply same scale to test
+X_train_scaled = scaler.fit_transform(X_train)
+X_test_scaled  = scaler.transform(X_test)
 
 # =============================================================================
 # MODEL 1 — LINEAR REGRESSION
@@ -190,9 +176,6 @@ print(classification_report(y_clf_test, y_pred_log,
 # MODEL 3 — RANDOM FOREST
 # =============================================================================
 # Ensemble of 100 decision trees. Votes on the majority class (pass/fail).
-# Does NOT need feature scaling.
-# Extra benefit: gives feature importances — which variables matter most?
-# n_estimators=100 is a solid default; more trees = more stable but slower.
 # =============================================================================
 
 print("─" * 65)
@@ -229,14 +212,6 @@ print(classification_report(y_clf_test, y_pred_rf,
 #   - Input layer:   one node per feature
 #   - Hidden layers: two layers of 64 and 32 neurons (64, 32)
 #   - Output layer:  one node — pass (1) or fail (0)
-#
-# Key settings:
-#   hidden_layer_sizes=(64, 32) — two hidden layers, getting smaller
-#   activation="relu"           — ReLU is the standard activation function
-#   max_iter=1000               — enough iterations to converge
-#   early_stopping=True         — stops training if validation score stops improving
-#                                 (prevents overfitting on small datasets)
-#   random_state=42             — reproducibility
 #
 # Neural Networks REQUIRE scaled features — same scaler as Logistic Regression.
 # =============================================================================
@@ -283,10 +258,10 @@ print(classification_report(y_clf_test, y_pred_nn,
 # PLOT 8 — CONFUSION MATRICES (all three classifiers)
 # =============================================================================
 # A confusion matrix shows:
-#   True Positives  (TP): predicted Pass, actually Pass  ✓
-#   True Negatives  (TN): predicted Fail, actually Fail  ✓
-#   False Positives (FP): predicted Pass, actually Fail  ✗ (Type I error)
-#   False Negatives (FN): predicted Fail, actually Pass  ✗ (Type II error)
+#   True Positives  (TP): predicted Pass, actually Pass
+#   True Negatives  (TN): predicted Fail, actually Fail
+#   False Positives (FP): predicted Pass, actually Fail  (Type I error)
+#   False Negatives (FN): predicted Fail, actually Pass  (Type II error)
 
 fig, axes = plt.subplots(1, 3, figsize=(15, 4))
 
@@ -315,7 +290,6 @@ print()
 # =============================================================================
 # Random Forest calculates how much each feature reduces impurity across all
 # trees. Higher importance = more useful for predicting pass/fail.
-# This is one of the most valuable outputs for your thesis discussion.
 
 importances = pd.Series(rf.feature_importances_, index=feature_cols)
 importances = importances.sort_values(ascending=True)
@@ -347,7 +321,6 @@ print()
 # PLOT 10 — MODEL COMPARISON BAR CHART
 # =============================================================================
 # Side-by-side comparison of all classification metrics for both models.
-# Makes it easy to see at a glance which model performs better and where.
 
 metrics = {
     "Accuracy":  [acc_log,  acc_rf,  acc_nn],

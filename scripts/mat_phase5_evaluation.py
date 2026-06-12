@@ -1,18 +1,7 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Phase 5: Evaluation & Thesis Conclusion
 # =============================================================================
-# Run this AFTER all previous phases.
-# Make sure student_preprocessed.csv and student-mat.csv are in the same folder.
 #
-# This script:
-#   1. Re-trains all three models (self-contained — no need to re-run Phase 4)
-#   2. Produces a final comprehensive evaluation
-#   3. Generates a ROC curve comparison plot
-#   4. Generates a Precision-Recall curve plot
-#   5. Prints a structured thesis conclusion summary
-#   6. Saves results_final_report.csv
-# =============================================================================
 
 import pandas as pd
 import numpy as np
@@ -142,7 +131,7 @@ print()
 # PART 2 — FAIL CLASS DEEP DIVE
 # =============================================================================
 # The Fail class is the most educationally important group — and the hardest
-# to predict. We report separate metrics for it here.
+# to predict.
 
 print("─" * 65)
 print("PART 2: Fail class performance (the at-risk students)")
@@ -175,10 +164,7 @@ print(f"  {'Fail Recall (at-risk detection rate)':<35} {fr_log:>14.4f} {fr_rf:>1
 print(f"  {'Fail F1':<35} {ff_log:>14.4f} {ff_rf:>14.4f} {ff_nn:>11.4f}")
 print(f"  {'Failing students correctly caught':<35} {tn_l:>14} {tn_r:>14} {tn_n:>11}")
 print(f"  {'Failing students missed':<35} {fn_l:>14} {fn_r:>14} {fn_n:>11}")
-print()
-print("  Note: 'missed' failing students are the most concerning outcome")
-print("  in an educational context — these are at-risk students overlooked.")
-print()
+
 
 # =============================================================================
 # PLOT 11 — ROC CURVES
@@ -256,7 +242,7 @@ print("Plot 12 saved: ../plots/mat_plot12_precision_recall.png")
 print()
 
 # =============================================================================
-# PART 3 — FEATURE IMPORTANCE SUMMARY (top 5 for thesis)
+# PART 3 — FEATURE IMPORTANCE SUMMARY
 # =============================================================================
 
 LABELS = {
@@ -279,58 +265,7 @@ for i, (feat, score) in enumerate(top5.items(), 1):
     print(f"  {i}. {feat:<35} {score:.4f}")
 print()
 
-# =============================================================================
-# PART 4 — STRUCTURED THESIS CONCLUSION
-# =============================================================================
 
-print("=" * 65)
-print("PART 4: Thesis Conclusion Summary")
-print("=" * 65)
-print()
-print("RESEARCH QUESTION:")
-print("  Can student academic performance be predicted using background")
-print("  factors (demographics, study habits, family situation)?")
-print()
-print("KEY FINDINGS:")
-print()
-print("  1. Linear relationships are weak (R² = 0.14).")
-print("     Background variables alone cannot reliably predict the exact")
-print("     final grade. This is expected: without prior grades (G1, G2),")
-print("     the task is genuinely difficult.")
-print()
-print("  2. Classification (pass/fail) is more feasible than regression.")
-print(f"     Logistic Regression achieved F1 = {m_log['f1']:.2f} and accuracy")
-print(f"     = {m_log['accuracy']:.2f}, beating the naive baseline of 0.671.")
-print()
-print("  3. Logistic Regression outperformed Random Forest and Neural Network")
-print("     on this dataset. With only 395 students and weak non-linear signals,")
-print("     a simpler model generalised better. The Neural Network requires more")
-print("     data to realise its potential — a known limitation on small datasets.")
-print(f"     CV F1 scores: LR={cv_log.mean():.2f}, RF={cv_rf.mean():.2f}, NN={cv_nn.mean():.2f}")
-print()
-print("  4. Failing students are the hardest to detect.")
-print(f"     Logistic Regression identified {tn_l}/{total_fail} failing students")
-print(f"     (recall = {fr_log:.2f}). This is the main limitation of the models")
-print("     and the most educationally significant finding.")
-print()
-print("  5. Past class failures is the strongest predictor of final grade,")
-print("     followed by parental education and alcohol consumption.")
-print("     Study time and absences showed surprisingly weak linear effects.")
-print()
-print("LIMITATIONS:")
-print("  - Small dataset (395 students, single school, Math subject only)")
-print("  - Class imbalance (67% pass) biases models toward predicting pass")
-print("  - No prior grade data used (intentional — avoids data leakage)")
-print("  - Neural Networks require larger datasets to reach full potential")
-print("  - Results may not generalise to other schools or subjects")
-print()
-print("FUTURE WORK:")
-print("  - Apply SMOTE or class weighting to improve Fail class detection")
-print("  - Include Portuguese language dataset for cross-subject comparison")
-print("  - Test deeper Neural Network architectures with more data")
-print("  - Test additional models: SVM, Gradient Boosting")
-print("  - Adjust classification threshold to prioritise Fail recall")
-print()
 
 # =============================================================================
 # SAVE FINAL REPORT CSV
