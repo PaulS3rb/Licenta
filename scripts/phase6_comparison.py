@@ -24,6 +24,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import seaborn as sns
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
 
 sns.set_theme(style="whitegrid", palette="muted")
 plt.rcParams["figure.dpi"] = 150
@@ -411,9 +414,72 @@ for m in ["Linear Regression", "Logistic Regression", "Random Forest", "Neural N
 
 pd.DataFrame(rows).to_csv("../results/comparison_results_summary.csv", index=False)
 
+
 # =============================================================================
-# PRINTED SUMMARY OF KEY CROSS-SUBJECT FINDINGS
+# Logistic Regression Coefficients — Both Subjects
 # =============================================================================
+
+LABELS = {
+    "age": "Age", "Medu": "Mother's Education", "Fedu": "Father's Education",
+    "traveltime": "Travel Time to School", "studytime": "Weekly Study Time",
+    "failures": "Past Class Failures", "famrel": "Family Relationship Quality",
+    "freetime": "Free Time After School", "goout": "Going Out with Friends",
+    "Dalc": "Workday Alcohol Consumption", "Walc": "Weekend Alcohol Consumption",
+    "health": "Current Health Status", "absences": "Number of Absences",
+    "paid_yes": "Paid Extra Classes", "schoolsup_yes": "Extra School Support",
+    "famsup_yes": "Family Educational Support",
+    "activities_yes": "Extracurricular Activities",
+    "internet_yes": "Internet Access at Home",
+    "romantic_yes": "In a Romantic Relationship",
+    "nursery_yes": "Attended Nursery School",
+    "higher_yes": "Wants Higher Education",
+    "address_U": "Urban Home Address",
+    "famsize_LE3": "Small Family Size",
+    "Pstatus_T": "Parents Living Together",
+    "sex_M": "Sex (Male)",
+    "school_MS": "School (Mousinho da Silveira)",
+}
+
+def get_lr_coefficients(csv_path):
+    df = pd.read_csv(csv_path)
+    exclude_cols = ["G3", "pass_fail", "G1", "G2"]
+    feature_cols = [c for c in df.columns if c not in exclude_cols]
+    X = df[feature_cols]
+    y = df["pass_fail"]
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42, stratify=y)
+    scaler = StandardScaler()
+    X_train_sc = scaler.fit_transform(X_train)
+    lr = LogisticRegression(max_iter=1000, random_state=42)
+    lr.fit(X_train_sc, y_train)
+    coef_df = pd.DataFrame({
+        "Feature": [LABELS.get(c, c) for c in feature_cols],
+        "Coefficient": lr.coef_[0]
+    })
+    coef_df["Abs_Coef"] = coef_df["Coefficient"].abs()
+    return coef_df.sort_values("Coefficient", ascending=False).reset_index(drop=True)
+
+mat_coef = get_lr_coefficients("../data/student_mat_preprocessed.csv")
+por_coef = get_lr_coefficients("../data/student_por_preprocessed.csv")
+
+for name, coef_df in [("MATHEMATICS", mat_coef), ("PORTUGUESE", por_coef)]:
+    print(f"\n{'='*60}")
+    print(f"LOGISTIC REGRESSION COEFFICIENTS — {name}")
+    print(f"{'='*60}")
+    print(f"\nTop 8 POSITIVE (predict PASS):")
+    print(f"{'Feature':<35} {'Coefficient':>12}")
+    print("-" * 50)
+    for _, row in coef_df[coef_df["Coefficient"] > 0].head(8).iterrows():
+        print(f"{row['Feature']:<35} {row['Coefficient']:>12.4f}")
+    print(f"\nTop 8 NEGATIVE (predict FAIL):")
+    print(f"{'Feature':<35} {'Coefficient':>12}")
+    print("-" * 50)
+    for _, row in coef_df[coef_df["Coefficient"] < 0].tail(8).sort_values("Coefficient").iterrows():
+        print(f"{row['Feature']:<35} {row['Coefficient']:>12.4f}")
+
+mat_coef.to_csv("../results/mat_results_lr_coefficients.csv", index=False)
+por_coef.to_csv("../results/por_results_lr_coefficients.csv", index=False)
+print("\nCoefficient CSVs saved.")
 
 print()
 print("=" * 65)
