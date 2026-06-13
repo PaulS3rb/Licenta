@@ -103,7 +103,7 @@ fig, ax = plt.subplots(figsize=(7, 5))
 sns.regplot(data=df_raw, x="absences", y="G3",
             scatter_kws={"alpha": 0.4, "s": 40, "color": "#4C72B0"},
             line_kws={"color": "#C44E52", "linewidth": 2},
-            ci=None,
+            seed=42,
             ax=ax)
 ax.set_title(f"{LABELS['absences']} vs {LABELS['G3']} — Portuguese",
              fontsize=14, fontweight="bold")
