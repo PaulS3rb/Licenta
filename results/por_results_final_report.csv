@@ -1,5 +1,5 @@
 Model,Task,R²,MAE,RMSE,Accuracy,Precision,Recall,F1,CV Mean,CV Std,AUC-ROC
-Linear Regression,Regression,0.1602,2.1564,2.8618,--,--,--,--,0.1639,0.1081,--
-Logistic Regression,Classification,--,--,--,0.8769,0.9231,0.9391,0.931,0.9013,0.0235,0.7843
-Random Forest,Classification,--,--,--,0.8846,0.8906,0.9913,0.9383,0.9209,0.0055,0.7916
-Neural Network,Classification,--,--,--,0.8077,0.8947,0.887,0.8908,0.8874,0.0112,0.6557
+Linear Regression,Regression,0.1602,2.1564,2.8618,—,—,—,—,0.1639,0.1081,—
+Logistic Regression,Classification,—,—,—,0.8769,0.9231,0.9391,0.931,0.9013,0.0235,0.7843
+Random Forest,Classification,—,—,—,0.8846,0.8906,0.9913,0.9383,0.9209,0.0055,0.7916
+Neural Network,Classification,—,—,—,0.8077,0.8947,0.887,0.8908,0.8874,0.0112,0.6557
