@@ -1,12 +1,5 @@
 # =============================================================================
-# BACHELOR THESIS - Student Performance Prediction
 # Portuguese Dataset — Phase 5: Evaluation & Thesis Conclusion
-# =============================================================================
-# Run this AFTER all Portuguese phases (por_phase1 through por_phase4).
-# Reads from:  ../data/student_por_preprocessed.csv
-# Writes to:   ../plots/por_plot11_roc_curves.png
-#              ../plots/por_plot12_precision_recall.png
-#              ../results/por_results_final_report.csv
 # =============================================================================
 
 import pandas as pd

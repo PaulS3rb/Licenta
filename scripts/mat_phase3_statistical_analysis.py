@@ -7,7 +7,7 @@
 #   1. Pearson correlation analysis (numeric variables vs G3)
 #   2. Hypothesis tests: t-tests and Mann-Whitney U tests
 #   3. Normality check (Shapiro-Wilk)
-#   4. Saves summary tables as CSV for your thesis
+#   4. Saves summary tables as CSV
 # =============================================================================
 
 import pandas as pd
@@ -121,16 +121,6 @@ print()
 # =============================================================================
 # PART 2 — HYPOTHESIS TESTS: BINARY GROUPS vs G3
 # =============================================================================
-# For binary/categorical variables (e.g. sex, internet access), we split
-# students into two groups and test whether their G3 means differ significantly.
-#
-# We use TWO tests:
-#   t-test         → assumes normal distribution (parametric)
-#   Mann-Whitney U → does NOT assume normal distribution (non-parametric)
-#
-# Effect size: Cohen's d tells you HOW LARGE the difference is, not just
-# whether it's statistically significant. Small: 0.2, Medium: 0.5, Large: 0.8
-# =============================================================================
 
 print("=" * 65)
 print("PART 2: Hypothesis Tests — group differences in G3")
@@ -201,13 +191,7 @@ for var, val1, val2, label1, label2 in binary_tests:
     })
 
 # =============================================================================
-# PART 3 — NORMALITY CHECK (for thesis completeness)
-# =============================================================================
-# Before using parametric tests (t-test), checks if G3 is normally
-# distributed. The Shapiro-Wilk test does this.
-# H0: the data IS normally distributed.
-# If p < 0.05 → reject H0 → data is NOT normal → non-parametric tests preferred.
-# This justifies reporting Mann-Whitney U alongside the t-test.
+# PART 3 — NORMALITY CHECK
 # =============================================================================
 
 print("=" * 65)

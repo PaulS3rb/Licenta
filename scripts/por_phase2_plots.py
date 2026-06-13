@@ -2,11 +2,6 @@
 # BACHELOR THESIS - Student Performance Prediction
 # Portuguese Dataset — Phase 2: Exploratory Data Analysis (EDA)
 # =============================================================================
-# Run this AFTER por_phase1_data_setup.py.
-# Reads from:  ../data/student-por.csv
-#              ../data/student_por_preprocessed.csv
-# Writes to:   ../plots/por_plot1_*.png … ../plots/por_plot6_*.png
-# =============================================================================
 
 import pandas as pd
 import numpy as np
