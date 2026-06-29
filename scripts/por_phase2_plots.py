@@ -42,7 +42,7 @@ print()
 # ── PLOT 1: Distribution of Final Grades (G3) ─────────────────────────────────
 fig, ax = plt.subplots(figsize=(8, 5))
 ax.hist(df_raw["G3"], bins=21, range=(-0.5, 20.5),
-        color="#4C72B0", edgecolor="white", linewidth=0.6)
+        color="#55A868", edgecolor="white", linewidth=0.6)
 ax.axvline(x=10, color="#C44E52", linestyle="--", linewidth=1.5,
            label="Pass threshold (10)")
 ax.axvline(x=df_raw["G3"].mean(), color="#55A868", linestyle="--", linewidth=1.5,

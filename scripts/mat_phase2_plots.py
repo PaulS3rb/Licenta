@@ -56,7 +56,7 @@ ax.axvline(x=10, color="#C44E52", linestyle="--", linewidth=1.5,
 ax.axvline(x=df_raw["G3"].mean(), color="#55A868", linestyle="--", linewidth=1.5,
            label=f"Mean grade ({df_raw['G3'].mean():.1f})")
 
-ax.set_title("Distribution of Final Grades (G3)", fontsize=14, fontweight="bold")
+ax.set_title("Distribution of Final Grades (G3) — Mathematics", fontsize=14, fontweight="bold")
 ax.set_xlabel(LABELS["G3"], fontsize=12)
 ax.set_ylabel("Number of Students", fontsize=12)
 ax.legend()
